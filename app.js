@@ -1,5 +1,5 @@
 const defaults={
-  ticket:200,salesDay:3.5,daysWeek:5,completionRate:100,d2dRaiseSalesThreshold:3.5,
+  ticket:220,salesDay:4.65,salesDayLow:4.3,salesDayHigh:5,daysWeek:5,completionRate:100,d2dRaiseSalesThreshold:4.3,
   detailerPay:17,detailerRaise:1,detailerRaiseMonths:6,
   managerPay:22,managerRaise:1,managerRaiseMonths:6,
   adminPay:24,adminRaise:0,adminRaiseMonths:12,
@@ -15,7 +15,7 @@ const defaults={
 };
 
 const labels={
-  ticket:'Average detail ($)',salesDay:'D2D sales / day',daysWeek:'Selling days / week',completionRate:'Completed jobs %',d2dRaiseSalesThreshold:'D2D sales/day required for raises',
+  ticket:'Average detail ($)',salesDay:'Planning avg details / day',salesDayLow:'Low target details / day',salesDayHigh:'High target details / day',daysWeek:'Selling days / week',completionRate:'Completed jobs %',d2dRaiseSalesThreshold:'D2D sales/day required for raises',
   detailerPay:'Detailer starting $/hr',detailerRaise:'Detailer raise ($)',detailerRaiseMonths:'Detailer raise every (months)',
   managerPay:'Manager starting $/hr',managerRaise:'Manager raise ($)',managerRaiseMonths:'Manager raise every (months)',
   adminPay:'Admin starting $/hr',adminRaise:'Admin raise ($)',adminRaiseMonths:'Admin raise every (months)',
@@ -43,7 +43,7 @@ for(let y=2027;y<=2028;y++){const start=y===2027?3:0;for(let m=start;m<12;m++)mo
 
 // Growth plan agreed in the conversation: 50 detailers by Dec 2027, 100 by Dec 2028.
 const targetDetailers=[2,8,14,20,26,32,38,44,50,50,54,58,62,66,70,75,80,85,90,95,100];
-const targetOffices=[1,1,1,1,1,1,1,1,1, 1,1,1,2,2,2,2,3,3,3,3,4];
+const targetOffices=[0,1,1,1,1,1,1,1,1, 1,1,1,2,2,2,2,3,3,3,3,4];
 
 const money=n=>`${n<0?'-$':'$'}${Math.abs(Math.round(n)).toLocaleString()}`;
 const pct=n=>`${Number(n).toFixed(1)}%`;
@@ -92,7 +92,7 @@ function render(){
     const det=targetDetailers[i];
     const d2d=Math.ceil(det/2);
     const vans=Math.ceil(det/2);
-    const mgr=Math.max(1,Math.ceil(vans/5));
+    const mgr=Math.floor(vans/5); // owner manages until 5 vans, then 1 manager per 5 vans
     const off=targetOffices[i];
     const admin=off; // one admin per office
     const recruiter=x.y===2027&&x.m===3?0:Math.max(1,Math.ceil(off*s.recruitersPerOffice)); // starts May 2027
@@ -139,6 +139,7 @@ function render(){
   document.querySelector('#p28').textContent=money(totals[2028].op);
   document.querySelector('#c28').textContent=money(totals[2028].cash);
   document.querySelector('#heroTicket').textContent=money(s.ticket);
+  const heroVolume=document.querySelector('#heroVolume'); if(heroVolume) heroVolume.textContent=`${s.salesDayLow.toFixed(1)}–${s.salesDayHigh.toFixed(1)}`;
 
   const unitRev=s.salesDay*s.daysWeek*s.ticket*s.weeksYear/12*(s.completionRate/100);
   const detStart=2*s.detailerPay*s.hoursWeek*s.weeksYear/12;
