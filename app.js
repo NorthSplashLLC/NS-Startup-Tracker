@@ -1,10 +1,10 @@
 const defaults={
-  ticket:200,salesDay:3.5,daysWeek:5,completionRate:100,
+  ticket:200,salesDay:3.5,daysWeek:5,completionRate:100,d2dRaiseSalesThreshold:3.5,
   detailerPay:17,detailerRaise:1,detailerRaiseMonths:6,
   managerPay:22,managerRaise:1,managerRaiseMonths:6,
   adminPay:24,adminRaise:0,adminRaiseMonths:12,
   recruiterPay:24,recruitersPerOffice:0.5,
-  d2dBase:300,d2dCommission:10,d2dRaise:2,d2dRaiseMonths:2,d2dCap:22,
+  d2dBase:300,d2dCommission:10,d2dRaise:1,d2dRaiseMonths:3,d2dCap:15,
   hoursWeek:40,weeksYear:52,
   vanPurchase:3000,vanSetup:2000,vanMonthly:1200,
   ipadPurchase:500,ipadService:40,hotspot:50,
@@ -15,7 +15,7 @@ const defaults={
 };
 
 const labels={
-  ticket:'Average detail ($)',salesDay:'D2D sales / day',daysWeek:'Selling days / week',completionRate:'Completed jobs %',
+  ticket:'Average detail ($)',salesDay:'D2D sales / day',daysWeek:'Selling days / week',completionRate:'Completed jobs %',d2dRaiseSalesThreshold:'D2D sales/day required for raises',
   detailerPay:'Detailer starting $/hr',detailerRaise:'Detailer raise ($)',detailerRaiseMonths:'Detailer raise every (months)',
   managerPay:'Manager starting $/hr',managerRaise:'Manager raise ($)',managerRaiseMonths:'Manager raise every (months)',
   adminPay:'Admin starting $/hr',adminRaise:'Admin raise ($)',adminRaiseMonths:'Admin raise every (months)',
@@ -62,7 +62,8 @@ function cohortD2DPayroll(cohorts,monthIndex,revenuePerRep){
   const baseMonthly=s.d2dBase*s.weeksYear/12;
   return cohorts.reduce((sum,c)=>{
     const tenure=monthIndex-c.monthIndex;
-    const steps=s.d2dRaiseMonths>0?Math.floor(tenure/s.d2dRaiseMonths):0;
+    const eligible=s.salesDay>=s.d2dRaiseSalesThreshold;
+    const steps=eligible&&s.d2dRaiseMonths>0?Math.floor(tenure/s.d2dRaiseMonths):0;
     const commission=Math.min(s.d2dCap,s.d2dCommission+steps*s.d2dRaise);
     return sum+c.count*(baseMonthly+revenuePerRep*commission/100);
   },0);
@@ -71,7 +72,8 @@ function avgD2DCommission(cohorts,monthIndex){
   const total=cohorts.reduce((a,c)=>a+c.count,0); if(!total)return 0;
   return cohorts.reduce((sum,c)=>{
     const tenure=monthIndex-c.monthIndex;
-    const steps=s.d2dRaiseMonths>0?Math.floor(tenure/s.d2dRaiseMonths):0;
+    const eligible=s.salesDay>=s.d2dRaiseSalesThreshold;
+    const steps=eligible&&s.d2dRaiseMonths>0?Math.floor(tenure/s.d2dRaiseMonths):0;
     return sum+c.count*Math.min(s.d2dCap,s.d2dCommission+steps*s.d2dRaise);
   },0)/total;
 }
@@ -90,7 +92,7 @@ function render(){
     const det=targetDetailers[i];
     const d2d=Math.ceil(det/2);
     const vans=Math.ceil(det/2);
-    const mgr=Math.max(1,Math.ceil(vans/4));
+    const mgr=Math.max(1,Math.ceil(vans/5));
     const off=targetOffices[i];
     const admin=off; // one admin per office
     const recruiter=x.y===2027&&x.m===3?0:Math.max(1,Math.ceil(off*s.recruitersPerOffice)); // starts May 2027
