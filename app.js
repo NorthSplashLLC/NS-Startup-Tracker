@@ -1,255 +1,156 @@
-const defaults={
+const detailDefaults={
   ticket:220,salesDay:4.65,salesDayLow:4.3,salesDayHigh:5,daysWeek:5,completionRate:100,d2dRaiseSalesThreshold:4.3,
   founderWeeks:4.57,founderD2DDays:3,founderDetailDays:3,founderPartnerPay:18,founderHoursDay:9,founderDetailsDay:3,
-  detailerPay:17,detailerRaise:1,detailerRaiseMonths:6,
-  managerPay:22,managerRaise:1,managerRaiseMonths:6,
-  adminPay:24,adminRaise:0,adminRaiseMonths:12,
-  recruiterPay:24,recruitersPerOffice:0.5,
-  d2dBase:300,d2dCommission:10,d2dRaise:1,d2dRaiseMonths:3,d2dCap:15,
-  hoursWeek:40,weeksYear:52,
-  vanPurchase:3000,vanSetup:2000,vanMonthly:1200,
-  ipadPurchase:500,ipadService:40,hotspot:50,
-  payrollTax:7.65,workersComp:2.0,paymentProcessing:3.0,
-  recruitCost:150,
-  officeSmall:1000,officeMedium:2200,officeLarge:3500,
-  officeSetup:3500,otherOverhead:1500
+  detailerPay:17,detailerRaise:1,detailerRaiseMonths:6,managerPay:22,managerRaise:1,managerRaiseMonths:6,
+  adminPay:24,adminRaise:0,adminRaiseMonths:12,recruiterPay:24,recruitersPerOffice:0.5,
+  d2dBase:300,d2dCommission:10,d2dRaise:1,d2dRaiseMonths:3,d2dCap:15,hoursWeek:40,weeksYear:52,
+  vanPurchase:3000,vanSetup:2000,vanMonthly:1200,ipadPurchase:500,ipadService:40,hotspot:50,
+  payrollTax:7.65,workersComp:2,paymentProcessing:3,recruitCost:150,
+  officeSmall:1000,officeMedium:2200,officeLarge:3500,officeSetup:3500,otherOverhead:1500,
+  post2030DetailerGrowth:12,post2030OfficeEveryDetailers:50
 };
 
-const groups=[
-  {title:'Sales & service',subtitle:'The numbers that drive revenue',keys:['ticket','salesDay','salesDayLow','salesDayHigh','daysWeek','completionRate']},
+const capitalDefaults={startingBusinessCash:35000,ownerDistributionPct:15,personalTaxReservePct:30,annualPersonalSpend:48000,acquisitionReservePct:60};
+
+const ventureDefaults={
+  clothing:{name:'Clothing Brand',division:'Retail',startYear:2028,firstRevenue:300000,margin:15,growth:35,employees:4,locationEvery:3,startupEquity:30000,expansionEquity:40000,totalProjectCost:30000,note:'Online first → creators → pop-ups → flagship retail when unit economics support it.'},
+  cleaning:{name:'Commercial Cleaning',division:'Service',startYear:2029,firstRevenue:500000,margin:18,growth:38,employees:12,locationEvery:2,startupEquity:50000,expansionEquity:60000,totalProjectCost:50000,note:'Recurring office, medical, retail and warehouse contracts with regional crews.'},
+  pressure:{name:'Pressure Washing',division:'Service',startYear:2030,firstRevenue:350000,margin:22,growth:32,employees:6,locationEvery:2,startupEquity:40000,expansionEquity:45000,totalProjectCost:40000,note:'Cross-sell detailing customers, HOAs and commercial property accounts.'},
+  bowling:{name:'Bowling & Entertainment',division:'Entertainment',startYear:2032,firstRevenue:1800000,margin:16,growth:14,employees:32,locationEvery:4,startupEquity:350000,expansionEquity:400000,totalProjectCost:2000000,note:'Acquire a cash-flowing center, then add arcade, food, events and additional locations.'},
+  commercialRE:{name:'Commercial Real Estate',division:'Real Estate',startYear:2032,firstRevenue:450000,margin:55,growth:24,employees:3,locationEvery:2,startupEquity:450000,expansionEquity:500000,totalProjectCost:2500000,note:'Own operating locations and lease extra space to third-party tenants.'},
+  constructionMgmt:{name:'Construction Management',division:'Construction',startYear:2033,firstRevenue:1200000,margin:12,growth:30,employees:10,locationEvery:3,startupEquity:150000,expansionEquity:150000,totalProjectCost:250000,note:'Manage schedules, budgets, procurement and contractors before taking on larger development work.'},
+  apartmentDev:{name:'Apartment Development',division:'Real Estate',startYear:2034,firstRevenue:2500000,margin:18,growth:28,employees:10,locationEvery:3,startupEquity:1500000,expansionEquity:2000000,totalProjectCost:120000000,note:'Developer fees and project-level profit participation; outside equity and construction debt fund most project cost.'},
+  propertyMgmt:{name:'Property Management',division:'Real Estate',startYear:2035,firstRevenue:650000,margin:20,growth:30,employees:12,locationEvery:2,startupEquity:100000,expansionEquity:100000,totalProjectCost:150000,note:'Operate apartments and commercial assets internally, then add third-party management.'},
+  apartmentPortfolio:{name:'Apartment Ownership',division:'Real Estate',startYear:2036,firstRevenue:7500000,margin:48,growth:22,employees:14,locationEvery:2,startupEquity:6000000,expansionEquity:3500000,totalProjectCost:120000000,note:'First stabilized luxury community, then additional properties as capital and financing allow.'},
+  generalContracting:{name:'General Contracting',division:'Construction',startYear:2036,firstRevenue:4500000,margin:9,growth:26,employees:28,locationEvery:3,startupEquity:500000,expansionEquity:350000,totalProjectCost:1000000,note:'Build internal execution capability while continuing to use specialized subcontractors.'},
+  hospitality:{name:'Hospitality & Resorts',division:'Hospitality',startYear:2038,firstRevenue:6000000,margin:20,growth:20,employees:70,locationEvery:4,startupEquity:4000000,expansionEquity:5000000,totalProjectCost:25000000,note:'Boutique resort first; scale rooms, restaurants, spa and event operations before island development.'},
+  investment:{name:'Investment Company',division:'Capital',startYear:2039,firstRevenue:1200000,margin:35,growth:24,employees:8,locationEvery:5,startupEquity:750000,expansionEquity:250000,totalProjectCost:1000000,note:'Capital raising, deal structuring and investment management for larger real-estate projects.'},
+  siteDev:{name:'Site Development',division:'Construction',startYear:2039,firstRevenue:5000000,margin:10,growth:24,employees:35,locationEvery:3,startupEquity:1200000,expansionEquity:700000,totalProjectCost:3000000,note:'Grading, roads, drainage and utility coordination for internal and external development work.'},
+  island:{name:'Island Development',division:'Island',startYear:2045,firstRevenue:0,margin:0,growth:0,employees:10,locationEvery:99,startupEquity:1500000,expansionEquity:0,totalProjectCost:150000000,note:'2045 feasibility → 2046 financing/logistics → 2047 acquisition and infrastructure launch.',isIsland:true,island2047Equity:15000000}
+};
+
+const detailGroups=[
+  {title:'Sales & service',subtitle:'The numbers that drive detailing revenue',keys:['ticket','salesDay','salesDayLow','salesDayHigh','daysWeek','completionRate']},
   {title:'Founder phase',subtitle:'Feb. 28–Mar. 31 before full-time launch',keys:['founderWeeks','founderD2DDays','founderDetailDays','founderPartnerPay','founderHoursDay','founderDetailsDay']},
   {title:'Pay & raises',subtitle:'Starting pay and automatic tenure raises',keys:['detailerPay','detailerRaise','detailerRaiseMonths','managerPay','managerRaise','managerRaiseMonths','adminPay','d2dBase','d2dCommission','d2dRaise','d2dRaiseMonths','d2dCap','d2dRaiseSalesThreshold']},
   {title:'Growth costs',subtitle:'Vans, iPads, recruiting and offices',keys:['vanPurchase','vanSetup','vanMonthly','ipadPurchase','ipadService','hotspot','recruitCost','officeSmall','officeMedium','officeLarge','officeSetup']},
+  {title:'Long-range detailing',subtitle:'Controls annual scaling after 2030',keys:['post2030DetailerGrowth','post2030OfficeEveryDetailers']},
   {title:'Advanced overhead',subtitle:'Taxes, insurance, processing and recruiting support',keys:['hoursWeek','weeksYear','recruiterPay','recruitersPerOffice','payrollTax','workersComp','paymentProcessing','otherOverhead'],advanced:true}
 ];
+const labels={ticket:'Average detail ($)',salesDay:'Planning avg details / day',salesDayLow:'Low target details / day',salesDayHigh:'High target details / day',daysWeek:'Selling days / week',completionRate:'Completed jobs %',d2dRaiseSalesThreshold:'D2D sales/day required for raises',founderWeeks:'Founder phase length (weeks)',founderD2DDays:'Your D2D days / week',founderDetailDays:'Partner detail days / week',founderPartnerPay:'Partner pay ($/hr)',founderHoursDay:'Partner hours / workday',founderDetailsDay:'Partner completed details / day',detailerPay:'Detailer starting $/hr',detailerRaise:'Detailer raise ($)',detailerRaiseMonths:'Detailer raise every (months)',managerPay:'Manager starting $/hr',managerRaise:'Manager raise ($)',managerRaiseMonths:'Manager raise every (months)',adminPay:'Admin starting $/hr',recruiterPay:'Recruiter $/hr',recruitersPerOffice:'Recruiters per office',d2dBase:'D2D base $/week',d2dCommission:'D2D starting commission %',d2dRaise:'D2D raise (points)',d2dRaiseMonths:'D2D raise every (months)',d2dCap:'D2D commission cap %',hoursWeek:'Hourly staff hours / week',weeksYear:'Weeks / year',vanPurchase:'Average van purchase ($)',vanSetup:'Van equipment/setup ($)',vanMonthly:'Van monthly operating ($)',ipadPurchase:'iPad purchase ($)',ipadService:'iPad service / month ($)',hotspot:'Hotspot / van / month ($)',payrollTax:'Employer payroll tax %',workersComp:'Workers comp / payroll %',paymentProcessing:'Card processing % of sales',recruitCost:'Recruiting / new hire ($)',officeSmall:'Small office / month ($)',officeMedium:'Medium office / month ($)',officeLarge:'Large office / month ($)',officeSetup:'New office setup ($)',otherOverhead:'Other overhead / month ($)',post2030DetailerGrowth:'Detailers annual growth after 2030 (%)',post2030OfficeEveryDetailers:'Add office per detailers after 2030'};
 
-const labels={
-  ticket:'Average detail ($)',salesDay:'Planning avg details / day',salesDayLow:'Low target details / day',salesDayHigh:'High target details / day',daysWeek:'Selling days / week',completionRate:'Completed jobs %',d2dRaiseSalesThreshold:'D2D sales/day required for raises',
-  founderWeeks:'Founder phase length (weeks)',founderD2DDays:'Your D2D days / week',founderDetailDays:'Partner detail days / week',founderPartnerPay:'Partner pay ($/hr)',founderHoursDay:'Partner hours / workday',founderDetailsDay:'Partner completed details / day',
-  detailerPay:'Detailer starting $/hr',detailerRaise:'Detailer raise ($)',detailerRaiseMonths:'Detailer raise every (months)',
-  managerPay:'Manager starting $/hr',managerRaise:'Manager raise ($)',managerRaiseMonths:'Manager raise every (months)',
-  adminPay:'Admin starting $/hr',
-  recruiterPay:'Recruiter $/hr',recruitersPerOffice:'Recruiters per office',
-  d2dBase:'D2D base $/week',d2dCommission:'D2D starting commission %',d2dRaise:'D2D raise (percentage points)',d2dRaiseMonths:'D2D raise every (months)',d2dCap:'D2D commission cap %',
-  hoursWeek:'Hourly staff hours / week',weeksYear:'Weeks / year',
-  vanPurchase:'Average van purchase ($)',vanSetup:'Van equipment/setup ($)',vanMonthly:'Van monthly operating ($)',
-  ipadPurchase:'iPad purchase ($)',ipadService:'iPad service / month ($)',hotspot:'Hotspot / van / month ($)',
-  payrollTax:'Employer payroll tax %',workersComp:'Workers comp / payroll %',paymentProcessing:'Card processing % of sales',
-  recruitCost:'Recruiting / new hire ($)',officeSmall:'Small office / month ($)',officeMedium:'Medium office / month ($)',officeLarge:'Large office / month ($)',officeSetup:'New office setup ($)',otherOverhead:'Other overhead / month ($)'
-};
+let detail={...detailDefaults,...JSON.parse(localStorage.getItem('mhDetail')||'{}')};
+let capital={...capitalDefaults,...JSON.parse(localStorage.getItem('mhCapital')||'{}')};
+let ventures=JSON.parse(JSON.stringify(ventureDefaults));
+try{const stored=JSON.parse(localStorage.getItem('mhVentures')||'{}');Object.keys(ventures).forEach(k=>Object.assign(ventures[k],stored[k]||{}));}catch(e){}
 
-let s={...defaults,...JSON.parse(localStorage.getItem('nsPlanner')||'{}')};
-const inputRoot=document.querySelector('#inputGroups');
-
-groups.forEach(group=>{
-  const section=document.createElement('div');
-  section.className=`input-group${group.advanced?' advanced-group':''}`;
-  section.innerHTML=`<div class="input-group-head"><div><h3>${group.title}</h3><span>${group.subtitle}</span></div></div><div class="grid"></div>`;
-  const grid=section.querySelector('.grid');
-  group.keys.forEach(k=>{
-    const d=document.createElement('div');d.className='input-card';
-    d.innerHTML=`<label>${labels[k]}</label><input type="number" step="0.01" data-k="${k}" value="${s[k]}">`;
-    grid.appendChild(d);
-  });
-  inputRoot.appendChild(section);
-});
-
-inputRoot.addEventListener('input',e=>{
-  if(!e.target.dataset.k)return;
-  s[e.target.dataset.k]=+e.target.value;
-  localStorage.setItem('nsPlanner',JSON.stringify(s));
-  render();
-});
-
-document.querySelector('#reset').onclick=()=>{if(confirm('Reset every editable number back to the North Splash defaults?')){localStorage.removeItem('nsPlanner');location.reload();}};
-let advanced=false;
-document.querySelector('#showAll').onclick=e=>{advanced=!advanced;document.body.classList.toggle('show-advanced',advanced);e.target.textContent=advanced?'Hide advanced settings':'Show all settings';};
-
-const yearPlans={
-  2027:{
-    startMonth:3,
-    detailers:[2,8,14,20,26,32,38,44,50],
-    offices:[0,1,1,1,1,1,1,1,1]
-  },
-  2028:{
-    startMonth:0,
-    detailers:[50,54,58,62,66,70,75,80,85,90,95,100],
-    offices:[1,1,1,2,2,2,2,3,3,3,3,4]
-  },
-  2029:{
-    startMonth:0,
-    detailers:[100,105,109,114,118,123,127,132,136,141,145,150],
-    offices:[4,4,4,4,5,5,5,5,6,6,6,6]
-  },
-  2030:{
-    startMonth:0,
-    detailers:[150,155,159,164,168,173,177,182,186,191,195,200],
-    offices:[6,6,6,7,7,7,7,8,8,8,8,8]
-  }
-};
-
-const months=[];
-Object.entries(yearPlans).forEach(([year,plan])=>{
-  plan.detailers.forEach((detailers,idx)=>{
-    months.push({y:+year,m:plan.startMonth+idx,detailers,offices:plan.offices[idx]});
-  });
-});
-const years=Object.keys(yearPlans).map(Number);
-
-const money=n=>`${n<0?'-$':'$'}${Math.abs(Math.round(n)).toLocaleString()}`;
-const number=n=>Math.round(n).toLocaleString();
-const pct=n=>`${Number(n).toFixed(1)}%`;
+const money=n=>`${n<0?'-$':'$'}${Math.abs(Math.round(n||0)).toLocaleString()}`;
+const compactMoney=n=>{const a=Math.abs(n||0);const sign=n<0?'−':'';if(a>=1e9)return `${sign}$${(a/1e9).toFixed(a>=1e10?1:2)}B`;if(a>=1e6)return `${sign}$${(a/1e6).toFixed(a>=1e7?1:2)}M`;if(a>=1e3)return `${sign}$${(a/1e3).toFixed(0)}K`;return `${sign}$${Math.round(a)}`};
+const pct=n=>`${Number(n||0).toFixed(1)}%`;const num=n=>Math.round(n||0).toLocaleString();
 const monthName=x=>`${new Date(x.y,x.m).toLocaleString('en',{month:'short'})} ${x.y}`;
 
-function addCohort(cohorts,count,monthIndex){if(count>0)cohorts.push({count,monthIndex});}
-function cohortHourlyPayroll(cohorts,monthIndex,startPay,raiseAmt,raiseMonths){
-  const monthlyHours=s.hoursWeek*s.weeksYear/12;
-  return cohorts.reduce((sum,c)=>{
-    const tenure=monthIndex-c.monthIndex;
-    const raises=raiseMonths>0?Math.floor(tenure/raiseMonths):0;
-    return sum+c.count*(startPay+raises*raiseAmt)*monthlyHours;
-  },0);
-}
-function cohortD2DPayroll(cohorts,monthIndex,revenuePerRep){
-  const baseMonthly=s.d2dBase*s.weeksYear/12;
-  return cohorts.reduce((sum,c)=>{
-    const tenure=monthIndex-c.monthIndex;
-    const eligible=s.salesDay>=s.d2dRaiseSalesThreshold;
-    const steps=eligible&&s.d2dRaiseMonths>0?Math.floor(tenure/s.d2dRaiseMonths):0;
-    const commission=Math.min(s.d2dCap,s.d2dCommission+steps*s.d2dRaise);
-    return sum+c.count*(baseMonthly+revenuePerRep*commission/100);
-  },0);
-}
-function avgD2DCommission(cohorts,monthIndex){
-  const total=cohorts.reduce((a,c)=>a+c.count,0); if(!total)return 0;
-  return cohorts.reduce((sum,c)=>{
-    const tenure=monthIndex-c.monthIndex;
-    const eligible=s.salesDay>=s.d2dRaiseSalesThreshold;
-    const steps=eligible&&s.d2dRaiseMonths>0?Math.floor(tenure/s.d2dRaiseMonths):0;
-    return sum+c.count*Math.min(s.d2dCap,s.d2dCommission+steps*s.d2dRaise);
-  },0)/total;
-}
-function officeRent(offices){if(offices<=1)return offices*s.officeSmall;if(offices===2)return offices*s.officeMedium;return offices*s.officeLarge;}
+function initTabs(){document.querySelectorAll('.app-tab').forEach(btn=>btn.onclick=()=>{document.querySelectorAll('.app-tab').forEach(b=>b.classList.remove('active'));document.querySelectorAll('.tab-page').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.querySelector(`#tab-${btn.dataset.tab}`).classList.add('active');window.scrollTo({top:360,behavior:'smooth'});});}
 
-function renderFounder(){
-  const sold=s.salesDay*s.founderD2DDays*s.founderWeeks;
-  const completionCapacity=s.founderDetailsDay*s.founderDetailDays*s.founderWeeks;
-  const completed=Math.min(sold,completionCapacity);
-  const backlog=Math.max(0,sold-completed);
-  const revenue=completed*s.ticket*(s.completionRate/100);
-  const partnerHours=s.founderHoursDay*s.founderDetailDays*s.founderWeeks;
-  const payroll=partnerHours*s.founderPartnerPay;
-  const payrollTaxes=payroll*s.payrollTax/100;
-  const workersComp=payroll*s.workersComp/100;
-  const processing=revenue*s.paymentProcessing/100;
-  const phaseMonths=s.founderWeeks/(s.weeksYear/12);
-  const recurring=(s.vanMonthly+s.hotspot+s.ipadService)*phaseMonths;
-  const profit=revenue-payroll-payrollTaxes-workersComp-processing-recurring;
-  document.querySelector('#fpSold').textContent=number(sold);
-  document.querySelector('#fpCompleted').textContent=number(completed);
-  document.querySelector('#fpBacklog').textContent=number(backlog);
-  document.querySelector('#fpRevenue').textContent=money(revenue);
-  document.querySelector('#fpPayroll').textContent=money(payroll);
-  const pp=document.querySelector('#fpProfit');pp.textContent=money(profit);pp.className=profit>=0?'positive':'negative';
+function initInputs(){
+  const root=document.querySelector('#inputGroups');root.innerHTML='';
+  detailGroups.forEach(group=>{const section=document.createElement('div');section.className=`input-group${group.advanced?' advanced-group':''}`;section.innerHTML=`<div class="input-group-head"><div><h3>${group.title}</h3><span>${group.subtitle}</span></div></div><div class="grid"></div>`;const grid=section.querySelector('.grid');group.keys.forEach(k=>{const d=document.createElement('div');d.className='input-card';d.innerHTML=`<label>${labels[k]}</label><input type="number" step="0.01" data-detail="${k}" value="${detail[k]}">`;grid.appendChild(d);});root.appendChild(section);});
+  root.oninput=e=>{if(!e.target.dataset.detail)return;detail[e.target.dataset.detail]=+e.target.value;localStorage.setItem('mhDetail',JSON.stringify(detail));renderAll();};
+  const capitalLabels={startingBusinessCash:'Starting business cash ($)',ownerDistributionPct:'Owner distribution of positive cash (%)',personalTaxReservePct:'Personal tax reserve (%)',annualPersonalSpend:'Annual personal spending ($)',acquisitionReservePct:'Retained cash tagged for acquisitions (%)'};
+  const capRoot=document.querySelector('#capitalInputs');capRoot.innerHTML='';Object.keys(capitalDefaults).forEach(k=>{const d=document.createElement('div');d.className='input-card';d.innerHTML=`<label>${capitalLabels[k]}</label><input type="number" step="0.01" data-capital="${k}" value="${capital[k]}">`;capRoot.appendChild(d);});capRoot.oninput=e=>{if(!e.target.dataset.capital)return;capital[e.target.dataset.capital]=+e.target.value;localStorage.setItem('mhCapital',JSON.stringify(capital));renderAll();};
+  let advanced=false;document.querySelector('#showAll').onclick=e=>{advanced=!advanced;document.body.classList.toggle('show-advanced',advanced);e.target.textContent=advanced?'Hide advanced settings':'Show all settings';};
 }
 
-function projectionTable(rows){
-  return `<div class="tablewrap"><table><thead><tr><th>Month</th><th>Detailers</th><th>D2D</th><th>Vans</th><th>Managers</th><th>Offices</th><th>Revenue</th><th>Avg D2D %</th><th>Operating Profit</th><th>Net Cash Flow</th></tr></thead><tbody class="projection-year-body">${rows}</tbody></table></div>`;
-}
+const detailYearPlans={
+  2027:{startMonth:3,detailers:[2,8,14,20,26,32,38,44,50],offices:[0,1,1,1,1,1,1,1,1]},
+  2028:{startMonth:0,detailers:[50,54,58,62,66,70,75,80,85,90,95,100],offices:[1,1,1,2,2,2,2,3,3,3,3,4]},
+  2029:{startMonth:0,detailers:[100,105,109,114,118,123,127,132,136,141,145,150],offices:[4,4,4,4,5,5,5,5,6,6,6,6]},
+  2030:{startMonth:0,detailers:[150,155,159,164,168,173,177,182,186,191,195,200],offices:[6,6,6,7,7,7,7,8,8,8,8,8]}
+};
+function officeRent(offices){if(offices<=1)return offices*detail.officeSmall;if(offices===2)return offices*detail.officeMedium;return offices*detail.officeLarge;}
+function addCohort(arr,count,monthIndex){if(count>0)arr.push({count,monthIndex});}
+function cohortHourlyPayroll(cohorts,monthIndex,startPay,raiseAmt,raiseMonths){const monthlyHours=detail.hoursWeek*detail.weeksYear/12;return cohorts.reduce((sum,c)=>{const tenure=Math.max(0,monthIndex-c.monthIndex);const raises=raiseMonths>0?Math.floor(tenure/raiseMonths):0;return sum+c.count*(startPay+raises*raiseAmt)*monthlyHours;},0);}
+function cohortD2DPayroll(cohorts,monthIndex,revenuePerRep){const baseMonthly=detail.d2dBase*detail.weeksYear/12;return cohorts.reduce((sum,c)=>{const tenure=Math.max(0,monthIndex-c.monthIndex);const eligible=detail.salesDay>=detail.d2dRaiseSalesThreshold;const steps=eligible&&detail.d2dRaiseMonths>0?Math.floor(tenure/detail.d2dRaiseMonths):0;const commission=Math.min(detail.d2dCap,detail.d2dCommission+steps*detail.d2dRaise);return sum+c.count*(baseMonthly+revenuePerRep*commission/100);},0);}
+function avgD2DCommission(cohorts,monthIndex){const total=cohorts.reduce((a,c)=>a+c.count,0);if(!total)return 0;return cohorts.reduce((sum,c)=>{const tenure=Math.max(0,monthIndex-c.monthIndex);const steps=detail.salesDay>=detail.d2dRaiseSalesThreshold&&detail.d2dRaiseMonths>0?Math.floor(tenure/detail.d2dRaiseMonths):0;return sum+c.count*Math.min(detail.d2dCap,detail.d2dCommission+steps*detail.d2dRaise);},0)/total;}
 
-function render(){
-  renderFounder();
-  const totals={};
-  const rowsByYear={};
-  const endState={};
-  years.forEach(y=>{totals[y]={rev:0,op:0,cash:0};rowsByYear[y]=[];});
-
-  let prev={det:0,d2d:0,mgr:0,vans:0,off:0,admin:0,recruiter:0};
-  const cohorts={det:[],d2d:[],mgr:[],admin:[],recruiter:[]};
-
+function buildDetailModel(){
+  const months=[];
+  Object.entries(detailYearPlans).forEach(([y,p])=>p.detailers.forEach((d,i)=>months.push({y:+y,m:p.startMonth+i,detailers:d,offices:p.offices[i]})));
+  // Continue North Splash month-by-month through 2047 so hire-date raises keep applying exactly.
+  let priorEOY=200,priorOffices=8;
+  for(let y=2031;y<=2047;y++){
+    const targetEOY=Math.round(priorEOY*(1+detail.post2030DetailerGrowth/100));
+    for(let m=0;m<12;m++){
+      const det=Math.round(priorEOY+(targetEOY-priorEOY)*(m+1)/12);
+      const off=Math.max(priorOffices,Math.ceil(det/Math.max(1,detail.post2030OfficeEveryDetailers)));
+      months.push({y,m,detailers:det,offices:off});
+    }
+    priorEOY=targetEOY;priorOffices=Math.max(priorOffices,Math.ceil(targetEOY/Math.max(1,detail.post2030OfficeEveryDetailers)));
+  }
+  const totals={},rowsByYear={},endState={};for(let y=2027;y<=2047;y++){totals[y]={revenue:0,opProfit:0,capex:0,netCash:0,employees:0};rowsByYear[y]=[];}
+  let prev={det:0,d2d:0,mgr:0,vans:0,off:0,admin:0,recruiter:0};const cohorts={det:[],d2d:[],mgr:[],admin:[],recruiter:[]};
   months.forEach((x,i)=>{
-    const det=x.detailers;
-    const d2d=Math.ceil(det/2);
-    const vans=Math.ceil(det/2);
-    const mgr=Math.floor(vans/5);
-    const off=x.offices;
-    const admin=off;
-    const recruiter=(x.y===2027&&x.m===3)||off===0?0:Math.max(1,Math.ceil(off*s.recruitersPerOffice));
-
+    const det=x.detailers,d2d=Math.ceil(det/2),vans=Math.ceil(det/2),mgr=Math.floor(vans/5),off=x.offices,admin=off,recruiter=(x.y===2027&&x.m===3)||off===0?0:Math.max(1,Math.ceil(off*detail.recruitersPerOffice));
     const newDet=Math.max(0,det-prev.det),newD=Math.max(0,d2d-prev.d2d),newMgr=Math.max(0,mgr-prev.mgr),newAdmin=Math.max(0,admin-prev.admin),newRecruiter=Math.max(0,recruiter-prev.recruiter),newV=Math.max(0,vans-prev.vans),newOff=Math.max(0,off-prev.off);
     addCohort(cohorts.det,newDet,i);addCohort(cohorts.d2d,newD,i);addCohort(cohorts.mgr,newMgr,i);addCohort(cohorts.admin,newAdmin,i);addCohort(cohorts.recruiter,newRecruiter,i);
-
-    const revenuePerRep=s.salesDay*s.daysWeek*s.ticket*s.weeksYear/12*(s.completionRate/100);
-    const rev=d2d*revenuePerRep;
-    const detPayroll=cohortHourlyPayroll(cohorts.det,i,s.detailerPay,s.detailerRaise,s.detailerRaiseMonths);
-    const mgrPayroll=cohortHourlyPayroll(cohorts.mgr,i,s.managerPay,s.managerRaise,s.managerRaiseMonths);
-    const adminPayroll=cohortHourlyPayroll(cohorts.admin,i,s.adminPay,s.adminRaise,s.adminRaiseMonths);
-    const recruiterPayroll=cohortHourlyPayroll(cohorts.recruiter,i,s.recruiterPay,0,12);
-    const d2dPayroll=cohortD2DPayroll(cohorts.d2d,i,revenuePerRep);
-    const wages=detPayroll+mgrPayroll+adminPayroll+recruiterPayroll+d2dPayroll;
-    const payrollTaxes=wages*s.payrollTax/100;
-    const workersComp=(detPayroll+mgrPayroll+adminPayroll+recruiterPayroll)*s.workersComp/100;
-    const processing=rev*s.paymentProcessing/100;
-    const recurring=vans*(s.vanMonthly+s.hotspot)+d2d*s.ipadService+officeRent(off)+s.otherOverhead;
-    const recruiting=(newDet+newD+newMgr+newAdmin+newRecruiter)*s.recruitCost;
-    const opExpenses=wages+payrollTaxes+workersComp+processing+recurring+recruiting;
-    const opProfit=rev-opExpenses;
-    const growthCapex=newV*(s.vanPurchase+s.vanSetup)+newD*s.ipadPurchase+newOff*s.officeSetup;
-    const netCash=opProfit-growthCapex;
-
-    totals[x.y].rev+=rev;totals[x.y].op+=opProfit;totals[x.y].cash+=netCash;
-    const avgComm=avgD2DCommission(cohorts.d2d,i);
-    const isYearEnd=x.m===11;
-    rowsByYear[x.y].push(`<tr class="${isYearEnd?'year-end-row':''}"><td>${monthName(x)}</td><td>${det}</td><td>${d2d}</td><td>${vans}</td><td>${mgr}</td><td>${off}</td><td>${money(rev)}</td><td>${pct(avgComm)}</td><td class="${opProfit>=0?'positive':'negative'}">${money(opProfit)}</td><td class="${netCash>=0?'positive':'negative'}">${money(netCash)}</td></tr>`);
-    endState[x.y]={det,d2d,vans,mgr,off,avgComm};
-    prev={det,d2d,mgr,vans,off,admin,recruiter};
+    const revenuePerRep=detail.salesDay*detail.daysWeek*detail.ticket*detail.weeksYear/12*(detail.completionRate/100),rev=d2d*revenuePerRep;
+    const detPayroll=cohortHourlyPayroll(cohorts.det,i,detail.detailerPay,detail.detailerRaise,detail.detailerRaiseMonths),mgrPayroll=cohortHourlyPayroll(cohorts.mgr,i,detail.managerPay,detail.managerRaise,detail.managerRaiseMonths),adminPayroll=cohortHourlyPayroll(cohorts.admin,i,detail.adminPay,detail.adminRaise,detail.adminRaiseMonths),recruiterPayroll=cohortHourlyPayroll(cohorts.recruiter,i,detail.recruiterPay,0,12),d2dPayroll=cohortD2DPayroll(cohorts.d2d,i,revenuePerRep),wages=detPayroll+mgrPayroll+adminPayroll+recruiterPayroll+d2dPayroll;
+    const payrollTaxes=wages*detail.payrollTax/100,workersComp=(detPayroll+mgrPayroll+adminPayroll+recruiterPayroll)*detail.workersComp/100,processing=rev*detail.paymentProcessing/100,recurring=vans*(detail.vanMonthly+detail.hotspot)+d2d*detail.ipadService+officeRent(off)+detail.otherOverhead,recruiting=(newDet+newD+newMgr+newAdmin+newRecruiter)*detail.recruitCost;
+    const opProfit=rev-(wages+payrollTaxes+workersComp+processing+recurring+recruiting),capex=newV*(detail.vanPurchase+detail.vanSetup)+newD*detail.ipadPurchase+newOff*detail.officeSetup,netCash=opProfit-capex,avgComm=avgD2DCommission(cohorts.d2d,i),employees=det+d2d+mgr+admin+recruiter;
+    totals[x.y].employees=employees;totals[x.y].revenue+=rev;totals[x.y].opProfit+=opProfit;totals[x.y].capex+=capex;totals[x.y].netCash+=netCash;
+    rowsByYear[x.y].push({label:monthName(x),det,d2d,vans,mgr,off,rev,avgComm,opProfit,netCash});endState[x.y]={det,d2d,vans,mgr,off,admin,recruiter,employees,avgComm};prev={det,d2d,mgr,vans,off,admin,recruiter};
   });
+  return {totals,rowsByYear,endState};
+}
+function renderFounder(){const sold=detail.salesDay*detail.founderD2DDays*detail.founderWeeks,capacity=detail.founderDetailsDay*detail.founderDetailDays*detail.founderWeeks,completed=Math.min(sold,capacity),backlog=Math.max(0,sold-completed),revenue=completed*detail.ticket*(detail.completionRate/100),hours=detail.founderHoursDay*detail.founderDetailDays*detail.founderWeeks,payroll=hours*detail.founderPartnerPay,tax=payroll*detail.payrollTax/100,wc=payroll*detail.workersComp/100,processing=revenue*detail.paymentProcessing/100,phaseMonths=detail.founderWeeks/(detail.weeksYear/12),recurring=(detail.vanMonthly+detail.hotspot+detail.ipadService)*phaseMonths,profit=revenue-payroll-tax-wc-processing-recurring;[['fpSold',num(sold)],['fpCompleted',num(completed)],['fpBacklog',num(backlog)],['fpRevenue',money(revenue)],['fpPayroll',money(payroll)]].forEach(([id,v])=>document.querySelector('#'+id).textContent=v);const p=document.querySelector('#fpProfit');p.textContent=money(profit);p.className=profit>=0?'positive':'negative';}
 
-  document.querySelector('#yearSummaryCards').innerHTML=years.map(y=>{
-    const t=totals[y],e=endState[y],margin=t.rev?t.op/t.rev*100:0;
-    return `<div class="year-summary-card"><span>${y} REVENUE</span><strong>${money(t.rev)}</strong><b class="year-profit ${t.op>=0?'positive':'negative'}">${money(t.op)} profit</b><small>${pct(margin)} margin · ${e.det} detailers · ${e.off} office${e.off===1?'':'s'}</small></div>`;
-  }).join('');
+function ventureYear(v,y){if(y<v.startYear)return null;const age=y-v.startYear;if(v.isIsland){const expansion=y===2047?(v.island2047Equity||0):0;return {revenue:0,opProfit:0,capex:(age===0?v.startupEquity:0)+expansion,netCash:-((age===0?v.startupEquity:0)+expansion),employees:age<2?v.employees:Math.round(v.employees*1.5),locations:1};}
+  const revenue=v.firstRevenue*Math.pow(1+v.growth/100,age),opProfit=revenue*v.margin/100,locations=1+Math.floor(age/Math.max(1,v.locationEvery)),prevLocations=age===0?0:1+Math.floor((age-1)/Math.max(1,v.locationEvery)),newLocations=Math.max(0,locations-prevLocations),capex=(age===0?v.startupEquity:0)+(age>0?newLocations*v.expansionEquity:0),netCash=opProfit-capex,employees=Math.max(1,Math.round(v.employees*Math.pow(revenue/Math.max(1,v.firstRevenue),.72)));return {revenue,opProfit,capex,netCash,employees,locations};}
 
-  const openYears=new Set(JSON.parse(sessionStorage.getItem('nsOpenYears')||'[2027]'));
-  document.querySelector('#yearAccordions').innerHTML=years.map(y=>{
-    const t=totals[y],e=endState[y],isOpen=openYears.has(y);
-    return `<div class="year-group ${isOpen?'open':''}" data-year="${y}">
-      <button class="year-toggle" type="button" aria-expanded="${isOpen}">
-        <span class="year-label">${y}</span>
-        <span class="year-meta"><span>Revenue <b>${money(t.rev)}</b></span><span>Profit <b class="${t.op>=0?'positive':'negative'}">${money(t.op)}</b></span><span>Cash <b class="${t.cash>=0?'positive':'negative'}">${money(t.cash)}</b></span><span>EOY <b>${e.det} detailers · ${e.d2d} D2D · ${e.off} offices</b></span></span>
-        <span class="chevron">⌄</span>
-      </button>
-      <div class="year-months">${projectionTable(rowsByYear[y].join(''))}</div>
-    </div>`;
-  }).join('');
+function buildPortfolio(detailModel){const years={};for(let y=2027;y<=2047;y++){const d=detailModel.totals[y];const companies=[{id:'detailing',name:'North Splash Auto Luxe',division:'Service',...d,locations:detailModel.endState[y].off}];Object.entries(ventures).forEach(([id,v])=>{const a=ventureYear(v,y);if(a)companies.push({id,name:v.name,division:v.division,...a});});const total=companies.reduce((a,c)=>({revenue:a.revenue+c.revenue,opProfit:a.opProfit+c.opProfit,capex:a.capex+c.capex,netCash:a.netCash+c.netCash,employees:a.employees+c.employees}),{revenue:0,opProfit:0,capex:0,netCash:0,employees:0});years[y]={companies,total};}return years;}
 
-  document.querySelectorAll('.year-toggle').forEach(btn=>btn.addEventListener('click',()=>{
-    const group=btn.closest('.year-group');
-    group.classList.toggle('open');
-    btn.setAttribute('aria-expanded',group.classList.contains('open'));
-    const current=[...document.querySelectorAll('.year-group.open')].map(g=>+g.dataset.year);
-    sessionStorage.setItem('nsOpenYears',JSON.stringify(current));
-  }));
+const roadmap={
+  2027:{goal:'Scale North Splash to 50 detailers',before:'Working founder phase validated; operating cash reserve; hiring, scheduling and quality-control systems.',start:'Move from founder phase into crew-based operations. Add vans only with booked demand. Open the first small office in May.',milestone:'50 detailers / 25 vans target with profitable core crews and management handling daily work.'},
+  2028:{goal:'Regional detailing + launch clothing',before:'North Splash has leaders, cash reserves and repeatable recruiting.',start:'Expand North Splash offices and launch the clothing brand online with small inventory tests.',milestone:'Detailing succeeds outside the first territory and clothing shows repeat profitable demand.'},
+  2029:{goal:'Launch commercial cleaning',before:'Central admin, recruiting and finance can support another service company.',start:'Build recurring B2B contracts in medical, office, retail and warehouse accounts.',milestone:'Cleaning contracts cover crews and supervision with predictable recurring revenue.'},
+  2030:{goal:'Launch pressure washing',before:'Existing residential/commercial customer lists and sales team are active.',start:'Cross-sell detailing, cleaning, HOA and property-management accounts.',milestone:'Four operating companies are profitable with executive oversight.'},
+  2031:{goal:'Multi-city operating system',before:'Regional managers, SOPs, centralized accounting/HR and quality audits.',start:'Deepen the strongest markets instead of adding cities only for appearance.',milestone:'Multiple markets stay profitable without owner involvement in daily operations.'},
+  2032:{goal:'Acquire entertainment + commercial property',before:'Strong cash flow, lender relationships, acquisition reserve, CPA and commercial attorney.',start:'Buy a positive-cash-flow bowling/entertainment business and first operating real estate.',milestone:'Entertainment and property both produce positive cash flow after debt service and reserves.'},
+  2033:{goal:'Launch construction management',before:'Real projects to manage, experienced project executives, insurance and legal structure.',start:'Manage budgets, schedules, procurement and subcontractor coordination.',milestone:'Projects finish on schedule/budget and team can support first apartment development.'},
+  2034:{goal:'First apartment development',before:'Land pipeline, architect/engineers, investors, construction lender and development team.',start:'Secure site, entitlements, financing and build the first apartment community.',milestone:'First project completes and reaches a stable lease-up trajectory.'},
+  2035:{goal:'Property management + repeat development',before:'First development operating and internal systems ready for resident/property operations.',start:'Manage owned assets internally and selectively add third-party contracts.',milestone:'Property operations are dependable and second development pipeline is funded.'},
+  2036:{goal:'Apartment ownership + general contracting',before:'Development track record, project controls, experienced licensed leadership and financing.',start:'Hold stabilized apartments for recurring income while growing internal GC capability.',milestone:'Recurring real-estate cash flow plus repeatable construction execution.'},
+  2037:{goal:'Scale real estate and construction',before:'Multiple projects with clear KPIs, risk controls and regional leaders.',start:'Run multiple developments without overloading a single management team.',milestone:'Several stabilized assets and projects delivered consistently.'},
+  2038:{goal:'Enter hospitality',before:'Real-estate operations, property management and strong executive leadership.',start:'Acquire/build a boutique resort with restaurant, events and guest-experience systems.',milestone:'Hospitality operates profitably for a full cycle with a professional GM team.'},
+  2039:{goal:'Investment company + site development',before:'Audited financials, investor relationships, compliance counsel and construction pipeline.',start:'Structure investor-backed deals and build site-development capacity around owned projects.',milestone:'Outside capital participates successfully and site work is consistently controlled.'},
+  2040:{goal:'Luxury apartment communities',before:'Proven large-project team, property management, GC/site development and investor demand.',start:'Develop larger premium multifamily communities using repeatable design/operations.',milestone:'Large projects stabilize while portfolio leverage remains manageable.'},
+  2041:{goal:'Multi-state portfolio',before:'Regional leadership and centralized risk, HR, finance and legal systems.',start:'Scale strongest service, construction and asset businesses into selected states.',milestone:'Multiple states remain profitable and quality standards stay consistent.'},
+  2042:{goal:'Executive depth',before:'Bench of division presidents/CFO/COO-level leadership.',start:'Reduce founder dependence and formalize capital allocation across divisions.',milestone:'Holding company can operate for extended periods without daily founder intervention.'},
+  2043:{goal:'Prepare legacy-scale capital',before:'Large recurring cash flow, institutional reporting and proven investor returns.',start:'Build acquisition reserve and shortlist destination-scale hospitality/development opportunities.',milestone:'Liquidity and financing capacity support island due diligence without risking core businesses.'},
+  2044:{goal:'Island research & feasibility',before:'Dedicated legal, environmental, engineering, hospitality and logistics advisors.',start:'Compare islands, access, jurisdiction, utilities, development rights, weather and environmental constraints.',milestone:'Shortlist passes legal, environmental, infrastructure and financial feasibility tests.'},
+  2045:{goal:'Form island development operation',before:'Preferred island identified and preliminary feasibility complete.',start:'Finalize master plan, logistics model, marina/dock concepts, workforce housing and infrastructure budget.',milestone:'Development plan and financing structure are credible enough for final negotiations.'},
+  2046:{goal:'Secure financing & purchase readiness',before:'Contracts, investor commitments, lender term sheets and detailed due diligence.',start:'Finalize acquisition entity, infrastructure contracts, material-transport plan and operating teams.',milestone:'Purchase can close without unresolved legal, environmental or capital gaps.'},
+  2047:{goal:'Acquire island + Phase 1 infrastructure',before:'Purchase capital funded, approvals understood, logistics and emergency plans ready.',start:'Close acquisition; prioritize dock/marina access, power, water, wastewater, roads, communications, worker housing and maintenance.',milestone:'Island is secured and core infrastructure phase is funded before resort expansion begins.'}
+};
 
-  document.querySelector('#heroTicket').textContent=money(s.ticket);
-  document.querySelector('#heroVolume').textContent=`${s.salesDayLow.toFixed(1)}–${s.salesDayHigh.toFixed(1)}`;
+function renderVentureCards(){const root=document.querySelector('#ventureCards');root.innerHTML=Object.entries(ventures).map(([id,v])=>{const y2047=ventureYear(v,2047);return `<article class="venture-card"><div class="venture-head"><div><span class="kicker">${v.division.toUpperCase()}</span><h3>${v.name}</h3><p>${v.note}</p></div><div class="venture-year">${v.startYear}</div></div><div class="venture-body"><div class="venture-stats"><div class="venture-stat"><span>2047 REVENUE</span><b>${compactMoney(y2047?.revenue||0)}</b></div><div class="venture-stat"><span>2047 PROFIT</span><b class="${(y2047?.opProfit||0)>=0?'positive':'negative'}">${compactMoney(y2047?.opProfit||0)}</b></div><div class="venture-stat"><span>EMPLOYEES</span><b>${num(y2047?.employees||0)}</b></div><div class="venture-stat"><span>TOTAL PROJECT</span><b>${compactMoney(v.totalProjectCost)}</b></div></div><div class="venture-inputs">${[['startYear','Launch year'],['firstRevenue','Year-1 revenue ($)'],['margin','Operating margin (%)'],['growth','Annual growth (%)'],['employees','Starting employees'],['locationEvery','New location every N years'],['startupEquity','Launch cash equity ($)'],['expansionEquity','Expansion cash/location ($)'],['totalProjectCost','Total project/value ($)']].map(([k,l])=>`<div class="venture-input"><label>${l}</label><input type="number" step="0.01" data-venture="${id}" data-field="${k}" value="${v[k]}"></div>`).join('')}${v.isIsland?`<div class="venture-input"><label>2047 purchase equity ($)</label><input type="number" data-venture="${id}" data-field="island2047Equity" value="${v.island2047Equity}"></div>`:''}</div><p class="venture-note">Cash equity is what this model expects M Holdings to contribute. Total project cost can be much larger because financing/investors may fund the balance.</p></div></article>`;}).join('');root.onchange=e=>{const id=e.target.dataset.venture,field=e.target.dataset.field;if(!id||!field)return;ventures[id][field]=+e.target.value;localStorage.setItem('mhVentures',JSON.stringify(ventures));renderAll(true);};}
 
-  const unitRev=s.salesDay*s.daysWeek*s.ticket*s.weeksYear/12*(s.completionRate/100);
-  const detStart=2*s.detailerPay*s.hoursWeek*s.weeksYear/12;
-  const d2dStart=s.d2dBase*s.weeksYear/12+unitRev*s.d2dCommission/100;
-  const d2dCapPay=s.d2dBase*s.weeksYear/12+unitRev*s.d2dCap/100;
-  const units=[
-    ['1 D2D monthly revenue',unitRev],['2 detailers starting payroll',detStart],['1 D2D starting pay',d2dStart],['1 D2D pay at commission cap',d2dCapPay],
-    ['1 van monthly operations',s.vanMonthly+s.hotspot],['1 manager starting payroll',s.managerPay*s.hoursWeek*s.weeksYear/12],['1 admin starting payroll',s.adminPay*s.hoursWeek*s.weeksYear/12],['New van + setup',s.vanPurchase+s.vanSetup],['Recruiting per hire',s.recruitCost]
-  ];
-  document.querySelector('#unitCosts').innerHTML=units.map(a=>`<div class="unit"><span>${a[0]}</span><b>${money(a[1])}</b></div>`).join('');
+function renderDetail(detailModel){renderFounder();document.querySelector('#heroTicket').textContent=money(detail.ticket);const summaryYears=[2027,2028,2029,2030];document.querySelector('#detailYearSummary').innerHTML=summaryYears.map(y=>{const t=detailModel.totals[y],e=detailModel.endState[y];return `<div class="year-summary-card"><span>${y} REVENUE</span><strong>${compactMoney(t.revenue)}</strong><b class="year-profit ${t.opProfit>=0?'positive':'negative'}">${compactMoney(t.opProfit)} profit</b><small>${pct(t.opProfit/t.revenue*100)} margin · ${e.det} detailers · ${e.off} offices</small></div>`;}).join('');
+  const open=new Set(JSON.parse(sessionStorage.getItem('mhDetailOpen')||'[2027]'));document.querySelector('#detailYears').innerHTML=[2027,2028,2029,2030].map(y=>{const t=detailModel.totals[y],e=detailModel.endState[y],rows=detailModel.rowsByYear[y],isOpen=open.has(y);return `<div class="year-group ${isOpen?'open':''}" data-detail-year="${y}"><button class="year-toggle" type="button"><span class="year-label">${y}</span><span class="year-meta"><span>Revenue <b>${compactMoney(t.revenue)}</b></span><span>Profit <b class="${t.opProfit>=0?'positive':'negative'}">${compactMoney(t.opProfit)}</b></span><span>Cash <b>${compactMoney(t.netCash)}</b></span><span>EOY <b>${e.det} detailers · ${e.d2d} D2D · ${e.off} offices</b></span></span><span class="chevron">⌄</span></button><div class="year-months"><div class="tablewrap"><table><thead><tr><th>Month</th><th>Detailers</th><th>D2D</th><th>Vans</th><th>Managers</th><th>Offices</th><th>Revenue</th><th>Avg D2D %</th><th>Operating Profit</th><th>Net Cash Flow</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.label}</td><td>${r.det}</td><td>${r.d2d}</td><td>${r.vans}</td><td>${r.mgr}</td><td>${r.off}</td><td>${money(r.rev)}</td><td>${pct(r.avgComm)}</td><td class="${r.opProfit>=0?'positive':'negative'}">${money(r.opProfit)}</td><td class="${r.netCash>=0?'positive':'negative'}">${money(r.netCash)}</td></tr>`).join('')}</tbody></table></div></div></div>`;}).join('');document.querySelectorAll('[data-detail-year] .year-toggle').forEach(btn=>btn.onclick=()=>{const g=btn.closest('.year-group');g.classList.toggle('open');sessionStorage.setItem('mhDetailOpen',JSON.stringify([...document.querySelectorAll('[data-detail-year].open')].map(x=>+x.dataset.detailYear)));});
+  const unitRev=detail.salesDay*detail.daysWeek*detail.ticket*detail.weeksYear/12*(detail.completionRate/100),detStart=2*detail.detailerPay*detail.hoursWeek*detail.weeksYear/12,d2dStart=detail.d2dBase*detail.weeksYear/12+unitRev*detail.d2dCommission/100,d2dCap=detail.d2dBase*detail.weeksYear/12+unitRev*detail.d2dCap/100;const units=[['1 D2D monthly revenue',unitRev],['2 detailers starting payroll',detStart],['1 D2D starting pay',d2dStart],['1 D2D pay at commission cap',d2dCap],['1 van monthly operations',detail.vanMonthly+detail.hotspot],['1 manager starting payroll',detail.managerPay*detail.hoursWeek*detail.weeksYear/12],['1 admin starting payroll',detail.adminPay*detail.hoursWeek*detail.weeksYear/12],['New van + setup',detail.vanPurchase+detail.vanSetup],['Recruiting per hire',detail.recruitCost]];document.querySelector('#unitCosts').innerHTML=units.map(a=>`<div class="unit"><span>${a[0]}</span><b>${money(a[1])}</b></div>`).join('');
 }
 
-function exportCSV(){
-  const headers=['Month','Detailers','D2D','Vans','Managers','Offices','Revenue','Avg D2D Commission','Operating Profit','Net Cash Flow'];
-  const trs=[...document.querySelectorAll('.projection-year-body tr')];
-  const lines=[headers.join(','),...trs.map(tr=>[...tr.children].map(td=>`"${td.textContent.replaceAll('"','""')}"`).join(','))];
-  const blob=new Blob([lines.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='north-splash-projection.csv';a.click();URL.revokeObjectURL(a.href);
+function renderPortfolio(portfolio,detailModel){const active2047=portfolio[2047].companies.length,tot2047=portfolio[2047].total;document.querySelector('#heroVentures').textContent=active2047;const cumulativeRevenue=Object.values(portfolio).reduce((a,y)=>a+y.total.revenue,0),cumulativeProfit=Object.values(portfolio).reduce((a,y)=>a+y.total.opProfit,0);document.querySelector('#portfolioKpis').innerHTML=[['2047 revenue',compactMoney(tot2047.revenue),'Annual portfolio revenue'],['2047 operating profit',compactMoney(tot2047.opProfit),pct(tot2047.opProfit/tot2047.revenue*100)+' margin'],['2047 employees',num(tot2047.employees),'Across active companies'],['2027–47 revenue',compactMoney(cumulativeRevenue),'Scenario cumulative'],['2027–47 profit',compactMoney(cumulativeProfit),'Before expansion cash']].map(([a,b,c])=>`<div class="kpi"><span>${a.toUpperCase()}</span><strong>${b}</strong><small>${c}</small></div>`).join('');
+  const open=new Set(JSON.parse(sessionStorage.getItem('mhPortfolioOpen')||'[2027,2030,2040,2047]'));document.querySelector('#portfolioYears').innerHTML=Object.entries(portfolio).map(([y,data])=>{const yr=+y,isOpen=open.has(yr),launches=data.companies.filter(c=>c.id!=='detailing'&&ventures[c.id]?.startYear===yr).map(c=>c.name),t=data.total;return `<div class="year-group ${isOpen?'open':''}" data-port-year="${yr}"><button class="year-toggle" type="button"><span class="year-label">${yr}</span><span class="year-meta"><span>Revenue <b>${compactMoney(t.revenue)}</b></span><span>Profit <b class="${t.opProfit>=0?'positive':'negative'}">${compactMoney(t.opProfit)}</b></span><span>Net cash <b class="${t.netCash>=0?'positive':'negative'}">${compactMoney(t.netCash)}</b></span><span>Employees <b>${num(t.employees)}</b></span>${launches.length?`<span>Launch <b>${launches.join(' · ')}</b></span>`:''}</span><span class="chevron">⌄</span></button><div class="year-months"><div class="tablewrap"><table><thead><tr><th>Company</th><th>Division</th><th>Revenue</th><th>Operating Profit</th><th>Expansion Cash</th><th>Net Cash Flow</th><th>Employees</th><th>Locations/Assets</th></tr></thead><tbody>${data.companies.map(c=>`<tr><td>${c.name}</td><td>${c.division}</td><td>${money(c.revenue)}</td><td class="${c.opProfit>=0?'positive':'negative'}">${money(c.opProfit)}</td><td>${money(c.capex)}</td><td class="${c.netCash>=0?'positive':'negative'}">${money(c.netCash)}</td><td>${num(c.employees)}</td><td>${num(c.locations||0)}</td></tr>`).join('')}</tbody></table></div></div></div>`;}).join('');document.querySelectorAll('[data-port-year] .year-toggle').forEach(btn=>btn.onclick=()=>{const g=btn.closest('.year-group');g.classList.toggle('open');sessionStorage.setItem('mhPortfolioOpen',JSON.stringify([...document.querySelectorAll('[data-port-year].open')].map(x=>+x.dataset.portYear)));});
+  const divisions={Service:['North Splash Auto Luxe','Commercial Cleaning','Pressure Washing'],Retail:['Clothing Brand'],Entertainment:['Bowling & Entertainment'],'Real Estate':['Commercial Real Estate','Apartment Development','Property Management','Apartment Ownership'],Construction:['Construction Management','General Contracting','Site Development'],Hospitality:['Hospitality & Resorts'],Capital:['Investment Company'],Island:['Island Development']};document.querySelector('#divisionGrid').innerHTML=Object.entries(divisions).map(([d,names])=>`<div class="division-card"><h3>${d}</h3><p>${d==='Service'?'Cash-flow engines and customer acquisition.':d==='Real Estate'?'Long-term assets, rent and development equity.':d==='Construction'?'Build and project execution capabilities.':d==='Hospitality'?'Destination operations before the island phase.':d==='Capital'?'Investor relationships and larger deal financing.':d==='Island'?'2045–47 feasibility, financing, acquisition and infrastructure.':'Brand and diversified operating income.'}</p><div class="mini-tags">${names.map(n=>`<span class="mini-tag">${n}</span>`).join('')}</div></div>`).join('');
 }
-document.querySelector('#export').onclick=exportCSV;
-render();
+
+function renderRoadmap(portfolio){const open=new Set(JSON.parse(sessionStorage.getItem('mhRoadmapOpen')||'[2027,2034,2047]'));document.querySelector('#roadmapYears').innerHTML=Object.entries(roadmap).map(([y,r])=>{const yr=+y,isOpen=open.has(yr),launches=portfolio[yr].companies.filter(c=>c.id!=='detailing'&&ventures[c.id]?.startYear===yr).map(c=>c.name);return `<div class="year-group ${isOpen?'open':''}" data-road-year="${yr}"><button class="year-toggle" type="button"><span class="year-label">${yr}</span><span class="year-meta"><span>Goal <b>${r.goal}</b></span><span>Revenue <b>${compactMoney(portfolio[yr].total.revenue)}</b></span><span>Profit <b>${compactMoney(portfolio[yr].total.opProfit)}</b></span></span><span class="chevron">⌄</span></button><div class="year-months"><div class="roadmap-content">${launches.length?`<ul class="launch-list">${launches.map(x=>`<li>Launch: ${x}</li>`).join('')}</ul>`:''}<div class="roadmap-grid"><div class="roadmap-box"><span>BEFORE YOU START</span><p>${r.before}</p></div><div class="roadmap-box"><span>HOW TO START</span><p>${r.start}</p></div><div class="roadmap-box"><span>MILESTONE TO MOVE ON</span><p>${r.milestone}</p></div></div></div></div></div>`;}).join('');document.querySelectorAll('[data-road-year] .year-toggle').forEach(btn=>btn.onclick=()=>{const g=btn.closest('.year-group');g.classList.toggle('open');sessionStorage.setItem('mhRoadmapOpen',JSON.stringify([...document.querySelectorAll('[data-road-year].open')].map(x=>+x.dataset.roadYear)));});}
+
+function renderCapital(portfolio){let businessCash=capital.startingBusinessCash,personalSavings=0;const rows=[];let totalDistributions=0;for(let y=2027;y<=2047;y++){const t=portfolio[y].total;const distributable=Math.max(0,t.netCash),distribution=distributable*capital.ownerDistributionPct/100,retained=t.netCash-distribution;businessCash+=retained;const afterTaxDistribution=distribution*(1-capital.personalTaxReservePct/100),personalDelta=afterTaxDistribution-capital.annualPersonalSpend;personalSavings+=personalDelta;totalDistributions+=distribution;const acquisitionFund=Math.max(0,businessCash)*capital.acquisitionReservePct/100;rows.push(`<tr><td>${y}</td><td>${money(t.revenue)}</td><td class="${t.opProfit>=0?'positive':'negative'}">${money(t.opProfit)}</td><td>${money(t.capex)}</td><td class="${t.netCash>=0?'positive':'negative'}">${money(t.netCash)}</td><td>${money(businessCash)}</td><td>${money(distribution)}</td><td class="${personalSavings>=0?'positive':'negative'}">${money(personalSavings)}</td><td>${money(acquisitionFund)}</td></tr>`);}document.querySelector('#capitalRows').innerHTML=rows.join('');document.querySelector('#capitalKpis').innerHTML=[['2047 retained business cash',compactMoney(businessCash),'After expansion + owner distributions'],['2047 personal savings',compactMoney(personalSavings),'After tax reserve + spending assumption'],['Total owner distributions',compactMoney(totalDistributions),'2027–2047'],['Acquisition fund target',compactMoney(Math.max(0,businessCash)*capital.acquisitionReservePct/100),`${capital.acquisitionReservePct}% of retained cash`],['2047 island cash equity',compactMoney(ventures.island.island2047Equity),'Editable in Businesses']].map(([a,b,c])=>`<div class="kpi"><span>${a.toUpperCase()}</span><strong>${b}</strong><small>${c}</small></div>`).join('');}
+
+function renderAll(refreshVentures=true){const detailModel=buildDetailModel(),portfolio=buildPortfolio(detailModel);renderDetail(detailModel);if(refreshVentures)renderVentureCards();renderPortfolio(portfolio,detailModel);renderRoadmap(portfolio);renderCapital(portfolio);}
+
+function exportCSV(){const d=buildDetailModel(),p=buildPortfolio(d),headers=['Year','Company','Division','Revenue','Operating Profit','Expansion Cash','Net Cash Flow','Employees'];const lines=[headers.join(',')];Object.entries(p).forEach(([y,data])=>data.companies.forEach(c=>lines.push([y,c.name,c.division,Math.round(c.revenue),Math.round(c.opProfit),Math.round(c.capex),Math.round(c.netCash),c.employees].map(v=>`"${String(v).replaceAll('"','""')}"`).join(','))));const blob=new Blob([lines.join('\n')],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='m-holdings-2027-2047.csv';a.click();URL.revokeObjectURL(a.href);}
+
+document.querySelector('#export').onclick=exportCSV;document.querySelector('#reset').onclick=()=>{if(confirm('Reset the entire M Holdings scenario back to the built-in defaults?')){['mhDetail','mhCapital','mhVentures'].forEach(k=>localStorage.removeItem(k));location.reload();}};
+initTabs();initInputs();renderAll();

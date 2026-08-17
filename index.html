@@ -4,95 +4,112 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#24140f">
-  <title>North Splash Growth Planner</title>
+  <title>M Holdings · Empire Growth OS</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <header class="site-header">
   <nav class="topbar">
-    <div class="brand"><span class="brand-dot"></span><span>NORTH SPLASH AUTO LUXE</span></div>
+    <div class="brand"><span class="brand-dot"></span><span>M HOLDINGS · GROWTH OS</span></div>
     <div class="actions"><button id="export">Export CSV</button><button id="reset" class="ghost">Reset defaults</button></div>
   </nav>
   <div class="header-copy">
-    <span class="eyebrow">OPERATIONS · GROWTH · PROFIT</span>
-    <h1>Growth & Profit Planner</h1>
-    <p>Founder launch through regional expansion. Edit the assumptions, and the entire plan recalculates instantly.</p>
+    <span class="eyebrow">2027 → 2047 · OPERATIONS · CAPITAL · LEGACY</span>
+    <h1>Empire Growth Planner</h1>
+    <p>One editable operating model for North Splash, new companies, real estate, construction, hospitality and the long-term island plan.</p>
   </div>
 </header>
 
 <main>
-  <section class="hero" aria-label="Plan highlights">
-    <div class="glass"><span>FOUNDER PHASE</span><strong>Feb–Mar</strong><small>1 van · 1 iPad · no full-time team</small></div>
-    <div class="glass"><span>2027 GOAL</span><strong>50</strong><small>detailers by December</small></div>
-    <div class="glass"><span>2030 GOAL</span><strong>200</strong><small>detailers across regional offices</small></div>
-    <div class="glass"><span>AVG DETAIL</span><strong id="heroTicket">$220</strong><small>editable below</small></div>
-    <div class="glass"><span>DAILY TARGET</span><strong id="heroVolume">4.3–5.0</strong><small>D2D sales per day</small></div>
+  <section class="hero" aria-label="Portfolio highlights">
+    <div class="glass"><span>FOUNDATION</span><strong>2027</strong><small>North Splash scale year</small></div>
+    <div class="glass"><span>2030 DETAILING</span><strong>200</strong><small>detailers in the base plan</small></div>
+    <div class="glass"><span>VENTURES</span><strong id="heroVentures">—</strong><small>operating companies by 2047</small></div>
+    <div class="glass"><span>2047 GOAL</span><strong>Island</strong><small>acquire + begin infrastructure</small></div>
+    <div class="glass"><span>AVG DETAIL</span><strong id="heroTicket">$220</strong><small>editable throughout</small></div>
   </section>
 
-  <section class="founder-section" id="founder">
-    <div class="sectionhead">
-      <div><span class="kicker">PHASE 01</span><h2>Founder Launch</h2><p>Feb. 28 → Mar. 31, 2027 while both founders still work full-time jobs.</p></div>
-      <span class="status-pill">Lean launch</span>
-    </div>
-    <div class="founder-layout">
-      <div class="founder-visual">
-        <div class="founder-overlay">
-          <span>You sell</span><b>3 off-days / week</b>
-          <span>Partner details</span><b>3 off-days / week</b>
-          <small>1 van · 1 iPad · partner paid $18/hr</small>
-        </div>
+  <div class="app-tabs" role="tablist">
+    <button class="app-tab active" data-tab="overview">Portfolio</button>
+    <button class="app-tab" data-tab="detailing">North Splash</button>
+    <button class="app-tab" data-tab="ventures">Businesses</button>
+    <button class="app-tab" data-tab="timeline">21-Year Roadmap</button>
+    <button class="app-tab" data-tab="capital">Capital & Savings</button>
+    <button class="app-tab" data-tab="settings">Settings</button>
+  </div>
+
+  <div class="tab-page active" id="tab-overview">
+    <section>
+      <div class="sectionhead"><div><span class="kicker">M HOLDINGS</span><h2>Portfolio Dashboard</h2><p>Every active company continues growing after launch. Click a year for the full company breakdown.</p></div><span class="status-pill">Live calculation</span></div>
+      <div id="portfolioKpis" class="kpi-grid"></div>
+      <div class="callout"><b>Planning model:</b> figures are editable scenario assumptions, not guaranteed outcomes. Large acquisitions use a separate cash-equity requirement so total project cost is not automatically treated as cash paid by the holding company.</div>
+      <div id="portfolioYears" class="year-accordions"></div>
+    </section>
+    <section>
+      <div class="sectionhead"><div><span class="kicker">DIVISIONS</span><h2>Company Structure</h2><p>A connected group: service cash flow → assets → construction → hospitality → island development.</p></div></div>
+      <div id="divisionGrid" class="division-grid"></div>
+    </section>
+  </div>
+
+  <div class="tab-page" id="tab-detailing">
+    <section class="founder-section" id="founder">
+      <div class="sectionhead"><div><span class="kicker">PHASE 01</span><h2>Founder Launch</h2><p>Feb. 28 → Mar. 31, 2027 while both founders still work full-time jobs.</p></div><span class="status-pill">Lean launch</span></div>
+      <div class="founder-layout">
+        <div class="founder-visual"><div class="founder-overlay"><span>You sell</span><b>3 off-days / week</b><span>Partner details</span><b>3 off-days / week</b><small>1 van · 1 iPad · partner paid $18/hr</small></div></div>
+        <div><div class="cards founder-cards"><div><span>Jobs sold</span><b id="fpSold"></b></div><div><span>Jobs completed</span><b id="fpCompleted"></b></div><div><span>April backlog</span><b id="fpBacklog"></b></div><div><span>Completed revenue</span><b id="fpRevenue"></b></div><div><span>Partner payroll</span><b id="fpPayroll"></b></div><div><span>Est. operating profit</span><b id="fpProfit"></b></div></div><div class="mini-note">Backlog is work sold but not yet completed. It rolls into April scheduling rather than being counted as founder-phase revenue.</div></div>
       </div>
-      <div>
-        <div class="cards founder-cards">
-          <div><span>Jobs sold</span><b id="fpSold"></b></div>
-          <div><span>Jobs completed</span><b id="fpCompleted"></b></div>
-          <div><span>April backlog</span><b id="fpBacklog"></b></div>
-          <div><span>Completed revenue</span><b id="fpRevenue"></b></div>
-          <div><span>Partner payroll</span><b id="fpPayroll"></b></div>
-          <div><span>Est. operating profit</span><b id="fpProfit"></b></div>
-        </div>
-        <div class="mini-note">Backlog means jobs sold during the founder phase but not yet completed. Those customers roll into April scheduling rather than being counted as March revenue.</div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <section id="assumptions">
-    <div class="sectionhead">
-      <div><span class="kicker">EDIT THE MODEL</span><h2>Assumptions</h2><p>Changes save automatically in this browser.</p></div>
-      <div class="quick-actions"><button id="showAll" class="soft">Show all settings</button></div>
-    </div>
-    <div id="inputGroups"></div>
-  </section>
+    <section>
+      <div class="sectionhead"><div><span class="kicker">NORTH SPLASH AUTO LUXE</span><h2>Detailing Projection</h2><p>Monthly detail through 2030, then annual scaling through 2047.</p></div><span class="status-pill">Cohort raises included</span></div>
+      <div id="detailYearSummary" class="year-summary-cards"></div>
+      <div class="callout"><b>Raise logic:</b> D2D commission starts at 10% and rises 1 point every 3 months when performance meets the threshold, capped at 15%. Detailers and managers receive +$1/hour every 6 months from each employee's hire date.</div>
+      <div id="detailYears" class="year-accordions"></div>
+    </section>
 
-  <section id="projection">
-    <div class="sectionhead">
-      <div><span class="kicker">PHASE 02–05</span><h2>2027–2030 Projection</h2><p>April 2027 → December 2030 · click a year to view monthly detail</p></div>
-      <span class="status-pill">Live calculation</span>
-    </div>
+    <section class="costs"><div class="sectionhead"><div><span class="kicker">QUICK REFERENCE</span><h2>Monthly Unit Economics</h2><p>Current cost and revenue of the core detailing unit.</p></div></div><div id="unitCosts" class="grid"></div></section>
+  </div>
 
-    <div id="yearSummaryCards" class="year-summary-cards"></div>
+  <div class="tab-page" id="tab-ventures">
+    <section>
+      <div class="sectionhead"><div><span class="kicker">VENTURE BUILDER</span><h2>Other Businesses</h2><p>Each company has editable launch, growth, margin, staffing and expansion assumptions.</p></div><span class="status-pill">All companies scale</span></div>
+      <div id="ventureCards" class="venture-cards"></div>
+    </section>
+  </div>
 
-    <div class="callout"><b>How to read this:</b> Operating Profit measures the business itself. Net Cash Flow also subtracts expansion purchases such as new vans, van setup, iPads and new-office setup. Raises are calculated from each employee cohort’s own hire month.</div>
+  <div class="tab-page" id="tab-timeline">
+    <section>
+      <div class="sectionhead"><div><span class="kicker">AUG 2026 → 2047</span><h2>21-Year Roadmap</h2><p>The roadmap is compact by year. Open a year to see launches, milestones, prerequisites and next-step criteria.</p></div></div>
+      <div id="roadmapYears" class="year-accordions roadmap"></div>
+    </section>
+  </div>
 
-    <div class="table-tools">
-      <div class="legend"><span><i class="dot pos"></i> profitable</span><span><i class="dot neg"></i> loss</span></div>
-      <span class="scroll-hint">Open a year, then scroll sideways on smaller screens →</span>
-    </div>
-    <div id="yearAccordions" class="year-accordions"></div>
-  </section>
+  <div class="tab-page" id="tab-capital">
+    <section>
+      <div class="sectionhead"><div><span class="kicker">CAPITAL CONTROL</span><h2>Cash, Reinvestment & Personal Savings</h2><p>Separates operating profit from expansion capital, retained business cash and owner distributions.</p></div></div>
+      <div id="capitalKpis" class="kpi-grid"></div>
+      <div class="callout"><b>Net cash flow</b> = operating profit minus expansion/startup cash invested that year. <b>Owner distribution</b> uses only positive net cash flow. Personal savings then subtracts the tax reserve and annual personal spending target.</div>
+      <div class="tablewrap"><table><thead><tr><th>Year</th><th>Revenue</th><th>Operating Profit</th><th>Expansion Cash</th><th>Net Cash Flow</th><th>Business Retained</th><th>Owner Distribution</th><th>Est. Personal Savings</th><th>Acquisition Fund</th></tr></thead><tbody id="capitalRows"></tbody></table></div>
+    </section>
+  </div>
 
-  <section class="costs" id="costs">
-    <div class="sectionhead"><div><span class="kicker">QUICK REFERENCE</span><h2>Monthly Unit Economics</h2><p>What one person, van or sales unit costs at the current settings.</p></div></div>
-    <div id="unitCosts" class="grid"></div>
-  </section>
+  <div class="tab-page" id="tab-settings">
+    <section id="assumptions">
+      <div class="sectionhead"><div><span class="kicker">EDIT THE MODEL</span><h2>North Splash Assumptions</h2><p>Changes save automatically in this browser.</p></div><div class="quick-actions"><button id="showAll" class="soft">Show all settings</button></div></div>
+      <div id="inputGroups"></div>
+    </section>
+    <section>
+      <div class="sectionhead"><div><span class="kicker">HOLDING COMPANY</span><h2>Capital Assumptions</h2><p>Controls how positive cash is split between business reserves and personal distributions.</p></div></div>
+      <div id="capitalInputs" class="grid"></div>
+    </section>
+  </div>
 
   <section class="notes">
-    <div><span class="kicker light">MODEL LOGIC</span><h2>How the plan works</h2></div>
-    <p><b>Founder phase:</b> you knock doors on 3 off-days per week while your partner details on 3 off-days per week at $18/hour. Sales above fulfillment capacity become April backlog.</p>
-    <p><b>Scale phase:</b> one van + two detailers + one D2D is the core revenue unit. D2D commission starts at 10% and rises 1 percentage point every 3 months when performance meets the threshold, capped at 15%. Detailers and managers receive +$1/hour every 6 months from their own hire dates. The owner manages the first crews; dedicated managers begin at 5 vans. Starting in May, offices add one $24/hour admin each plus recruiting support. The growth plan continues through 2030, reaching about 200 detailers, 100 vans/D2D reps and 8 offices by December 2030.</p>
+    <div><span class="kicker light">MODEL LOGIC</span><h2>Built to change with you</h2></div>
+    <p>This dashboard is a scenario planner. North Splash uses the detailed crew, payroll, raise, van, office and recruiting formulas already established. New ventures use editable annual growth models so they keep expanding after launch. Capital-heavy businesses separate total project value from the cash-equity contribution expected from M Holdings.</p>
   </section>
 </main>
-<footer>North Splash Auto Luxe · Internal Planning Dashboard</footer>
+<footer>M Holdings · Internal Planning Dashboard · Scenario model</footer>
 <script src="app.js"></script>
 </body>
 </html>
