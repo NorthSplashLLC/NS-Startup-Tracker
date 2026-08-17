@@ -14,3 +14,20 @@ Key changes in this build:
 - Capital-heavy businesses still separate total project value from M Holdings cash equity.
 
 This is a scenario-planning model, not a guaranteed forecast.
+
+V4 SHARED-HUB ACCOUNTING FIX
+- Shared hubs replace duplicate service-company offices; they do not create separate brand offices.
+- 2027 shared office/admin/recruiting costs begin in May, not January.
+- One admin per shared hub by default, matching the operating rule discussed.
+- One recruiter per shared hub by default; both are editable.
+- North Splash revenue math still uses the latest selected assumptions (default $220 average ticket and 4.65 details/day planning midpoint).
+- Shared hub costs are treated as holding-company infrastructure, not revenue-generating company revenue.
+
+V5 OFFICE / HUB CORRECTION
+- 2027-2028 use lean North Splash-only operations offices; there is no separate shared-hub row.
+- Shared service hubs begin in 2029 when Commercial Cleaning launches alongside North Splash.
+- Existing North Splash offices convert to shared hubs without paying a second full setup cost.
+- Default office rent: $1,500 small / $2,000 medium / $2,750 large per month; $3,000 setup.
+- Default shared hub rent: $1,500 small / $2,500 medium / $4,000 large per month; $4,000 setup only for genuinely new hubs.
+- One admin per hub remains; recruiting is centralized at roughly one recruiter per four hubs.
+- Hubs support field teams; capacity defaults to 180 field employees per hub before capacity alone forces another facility.

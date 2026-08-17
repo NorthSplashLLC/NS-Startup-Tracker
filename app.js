@@ -2,14 +2,14 @@ const detailDefaults={
   ticket:220,salesDay:4.65,salesDayLow:4.3,salesDayHigh:5,daysWeek:5,completionRate:100,d2dRaiseSalesThreshold:4.3,
   founderWeeks:4.57,founderD2DDays:3,founderDetailDays:3,founderPartnerPay:18,founderHoursDay:9,founderDetailsDay:3,
   detailerPay:17,detailerRaise:1,detailerRaiseMonths:6,managerPay:22,managerRaise:1,managerRaiseMonths:6,
-  adminPay:24,adminRaise:0,adminRaiseMonths:12,recruiterPay:24,recruitersPerOffice:0.5,
+  adminPay:24,adminRaise:0,adminRaiseMonths:12,recruiterPay:24,recruitersPerOffice:0.25,
   d2dBase:300,d2dCommission:10,d2dRaise:1,d2dRaiseMonths:3,d2dCap:15,hoursWeek:40,weeksYear:52,
   vanPurchase:3000,vanSetup:2000,vanMonthly:1200,ipadPurchase:500,ipadService:40,hotspot:50,
   payrollTax:7.65,workersComp:2,paymentProcessing:3,recruitCost:150,
-  officeSmall:1000,officeMedium:2200,officeLarge:3500,officeSetup:3500,otherOverhead:1500,
+  officeSmall:1500,officeMedium:2000,officeLarge:2750,officeSetup:3000,otherOverhead:1500,
   post2030DetailerGrowth:20,post2030OfficeEveryDetailers:16,
-  sharedHubCapacity:120,sharedHubSmallMonthly:2200,sharedHubMediumMonthly:4200,sharedHubLargeMonthly:6800,sharedHubSetup:18000,
-  sharedAdminPerEmployees:55,sharedRecruiterPerEmployees:120,sharedSupportPay:24,sharedHubAnnualInflation:3
+  sharedHubCapacity:180,sharedHubSmallMonthly:1500,sharedHubMediumMonthly:2500,sharedHubLargeMonthly:4000,sharedHubSetup:4000,
+  sharedAdminsPerHub:1,sharedRecruitersPerHub:0.25,sharedSupportPay:24,sharedHubAnnualInflation:3,sharedHubStartYear:2029
 };
 
 const capitalDefaults={startingBusinessCash:35000,ownerDistributionPct:15,personalTaxReservePct:30,annualPersonalSpend:48000,acquisitionReservePct:60};
@@ -38,13 +38,23 @@ const detailGroups=[
   {title:'Pay & raises',subtitle:'Starting pay and automatic tenure raises',keys:['detailerPay','detailerRaise','detailerRaiseMonths','managerPay','managerRaise','managerRaiseMonths','adminPay','d2dBase','d2dCommission','d2dRaise','d2dRaiseMonths','d2dCap','d2dRaiseSalesThreshold']},
   {title:'Growth costs',subtitle:'Vans, iPads, recruiting and offices',keys:['vanPurchase','vanSetup','vanMonthly','ipadPurchase','ipadService','hotspot','recruitCost','officeSmall','officeMedium','officeLarge','officeSetup']},
   {title:'Long-range detailing',subtitle:'Controls annual scaling after 2030',keys:['post2030DetailerGrowth','post2030OfficeEveryDetailers']},
-  {title:'Shared service hubs',subtitle:'One larger regional office for detailing, pressure washing, landscaping and cleaning',keys:['sharedHubCapacity','sharedHubSmallMonthly','sharedHubMediumMonthly','sharedHubLargeMonthly','sharedHubSetup','sharedAdminPerEmployees','sharedRecruiterPerEmployees','sharedSupportPay','sharedHubAnnualInflation']},
+  {title:'Shared service hubs',subtitle:'One larger regional office for detailing, pressure washing, landscaping and cleaning',keys:['sharedHubCapacity','sharedHubSmallMonthly','sharedHubMediumMonthly','sharedHubLargeMonthly','sharedHubSetup','sharedAdminsPerHub','sharedRecruitersPerHub','sharedSupportPay','sharedHubAnnualInflation','sharedHubStartYear']},
   {title:'Advanced overhead',subtitle:'Taxes, insurance, processing and recruiting support',keys:['hoursWeek','weeksYear','recruiterPay','recruitersPerOffice','payrollTax','workersComp','paymentProcessing','otherOverhead'],advanced:true}
 ];
-const labels={ticket:'Average detail ($)',salesDay:'Planning avg details / day',salesDayLow:'Low target details / day',salesDayHigh:'High target details / day',daysWeek:'Selling days / week',completionRate:'Completed jobs %',d2dRaiseSalesThreshold:'D2D sales/day required for raises',founderWeeks:'Founder phase length (weeks)',founderD2DDays:'Your D2D days / week',founderDetailDays:'Partner detail days / week',founderPartnerPay:'Partner pay ($/hr)',founderHoursDay:'Partner hours / workday',founderDetailsDay:'Partner completed details / day',detailerPay:'Detailer starting $/hr',detailerRaise:'Detailer raise ($)',detailerRaiseMonths:'Detailer raise every (months)',managerPay:'Manager starting $/hr',managerRaise:'Manager raise ($)',managerRaiseMonths:'Manager raise every (months)',adminPay:'Admin starting $/hr',recruiterPay:'Recruiter $/hr',recruitersPerOffice:'Recruiters per office',d2dBase:'D2D base $/week',d2dCommission:'D2D starting commission %',d2dRaise:'D2D raise (points)',d2dRaiseMonths:'D2D raise every (months)',d2dCap:'D2D commission cap %',hoursWeek:'Hourly staff hours / week',weeksYear:'Weeks / year',vanPurchase:'Average van purchase ($)',vanSetup:'Van equipment/setup ($)',vanMonthly:'Van monthly operating ($)',ipadPurchase:'iPad purchase ($)',ipadService:'iPad service / month ($)',hotspot:'Hotspot / van / month ($)',payrollTax:'Employer payroll tax %',workersComp:'Workers comp / payroll %',paymentProcessing:'Card processing % of sales',recruitCost:'Recruiting / new hire ($)',officeSmall:'Small office / month ($)',officeMedium:'Medium office / month ($)',officeLarge:'Large office / month ($)',officeSetup:'New office setup ($)',otherOverhead:'Other overhead / month ($)',post2030DetailerGrowth:'Detailers annual growth after 2030 (%)',post2030OfficeEveryDetailers:'Detailers per service market after 2030',sharedHubCapacity:'Service employees per shared hub',sharedHubSmallMonthly:'Small shared hub / month ($)',sharedHubMediumMonthly:'Medium shared hub / month ($)',sharedHubLargeMonthly:'Large shared hub / month ($)',sharedHubSetup:'New shared hub setup ($)',sharedAdminPerEmployees:'Service employees per shared admin',sharedRecruiterPerEmployees:'Service employees per shared recruiter',sharedSupportPay:'Shared admin/recruiter pay ($/hr)',sharedHubAnnualInflation:'Shared hub annual cost inflation (%)'};
+const labels={ticket:'Average detail ($)',salesDay:'Planning avg details / day',salesDayLow:'Low target details / day',salesDayHigh:'High target details / day',daysWeek:'Selling days / week',completionRate:'Completed jobs %',d2dRaiseSalesThreshold:'D2D sales/day required for raises',founderWeeks:'Founder phase length (weeks)',founderD2DDays:'Your D2D days / week',founderDetailDays:'Partner detail days / week',founderPartnerPay:'Partner pay ($/hr)',founderHoursDay:'Partner hours / workday',founderDetailsDay:'Partner completed details / day',detailerPay:'Detailer starting $/hr',detailerRaise:'Detailer raise ($)',detailerRaiseMonths:'Detailer raise every (months)',managerPay:'Manager starting $/hr',managerRaise:'Manager raise ($)',managerRaiseMonths:'Manager raise every (months)',adminPay:'Admin starting $/hr',recruiterPay:'Recruiter $/hr',recruitersPerOffice:'Recruiters per office',d2dBase:'D2D base $/week',d2dCommission:'D2D starting commission %',d2dRaise:'D2D raise (points)',d2dRaiseMonths:'D2D raise every (months)',d2dCap:'D2D commission cap %',hoursWeek:'Hourly staff hours / week',weeksYear:'Weeks / year',vanPurchase:'Average van purchase ($)',vanSetup:'Van equipment/setup ($)',vanMonthly:'Van monthly operating ($)',ipadPurchase:'iPad purchase ($)',ipadService:'iPad service / month ($)',hotspot:'Hotspot / van / month ($)',payrollTax:'Employer payroll tax %',workersComp:'Workers comp / payroll %',paymentProcessing:'Card processing % of sales',recruitCost:'Recruiting / new hire ($)',officeSmall:'Small office / month ($)',officeMedium:'Medium office / month ($)',officeLarge:'Large office / month ($)',officeSetup:'New office setup ($)',otherOverhead:'Other overhead / month ($)',post2030DetailerGrowth:'Detailers annual growth after 2030 (%)',post2030OfficeEveryDetailers:'Detailers per service market after 2030',sharedHubCapacity:'Service employees per shared hub',sharedHubSmallMonthly:'Small shared hub / month ($)',sharedHubMediumMonthly:'Medium shared hub / month ($)',sharedHubLargeMonthly:'Large shared hub / month ($)',sharedHubSetup:'New shared hub setup ($)',sharedAdminsPerHub:'Admins per shared hub',sharedRecruitersPerHub:'Recruiters per shared hub',sharedSupportPay:'Shared admin/recruiter pay ($/hr)',sharedHubAnnualInflation:'Shared hub annual cost inflation (%)',sharedHubStartYear:'Shared hubs begin (year)'};
 
 let detail={...detailDefaults,...JSON.parse(localStorage.getItem('mhDetail')||'{}')};
-if(localStorage.getItem('mhModelVersion')!=='7'){detail.post2030DetailerGrowth=Math.max(20,+detail.post2030DetailerGrowth||0);detail.post2030OfficeEveryDetailers=Math.min(16,+detail.post2030OfficeEveryDetailers||16);localStorage.setItem('mhDetail',JSON.stringify(detail));localStorage.setItem('mhModelVersion','7');}
+if(localStorage.getItem('mhModelVersion')!=='8'){
+  detail.post2030DetailerGrowth=Math.max(20,+detail.post2030DetailerGrowth||0);
+  detail.post2030OfficeEveryDetailers=Math.min(16,+detail.post2030OfficeEveryDetailers||16);
+  // V8 office correction: keep early North Splash offices lean and do not create shared hubs before a second field-service company exists.
+  detail.officeSmall=1500; detail.officeMedium=2000; detail.officeLarge=2750; detail.officeSetup=3000;
+  detail.recruitersPerOffice=0.25;
+  detail.sharedHubCapacity=180; detail.sharedHubSmallMonthly=1500; detail.sharedHubMediumMonthly=2500; detail.sharedHubLargeMonthly=4000; detail.sharedHubSetup=4000;
+  detail.sharedAdminsPerHub=1; detail.sharedRecruitersPerHub=0.25; detail.sharedHubStartYear=2029;
+  delete detail.sharedHubLaunchMonth2027;
+  localStorage.setItem('mhDetail',JSON.stringify(detail));localStorage.setItem('mhModelVersion','8');
+}
 let capital={...capitalDefaults,...JSON.parse(localStorage.getItem('mhCapital')||'{}')};
 let ventures=JSON.parse(JSON.stringify(ventureDefaults));
 try{const stored=JSON.parse(localStorage.getItem('mhVentures')||'{}');Object.keys(ventures).forEach(k=>Object.assign(ventures[k],stored[k]||{}));}catch(e){}
@@ -94,13 +104,13 @@ function buildDetailModel(){
   const totals={},rowsByYear={},endState={};for(let y=2027;y<=2047;y++){totals[y]={revenue:0,opProfit:0,capex:0,netCash:0,employees:0};rowsByYear[y]=[];}
   let prev={det:0,d2d:0,mgr:0,vans:0,off:0,admin:0,recruiter:0};const cohorts={det:[],d2d:[],mgr:[],admin:[],recruiter:[]};
   months.forEach((x,i)=>{
-    const det=x.detailers,d2d=Math.ceil(det/2),vans=Math.ceil(det/2),mgr=Math.floor(vans/5),off=x.offices,admin=0,recruiter=0;
+    const det=x.detailers,d2d=Math.ceil(det/2),vans=Math.ceil(det/2),mgr=Math.floor(vans/5),off=x.offices,earlyOffice=x.y<(detail.sharedHubStartYear||2029),admin=earlyOffice?off:0,recruiter=earlyOffice&&off>0?Math.max(1,Math.ceil(off*Math.max(0,detail.recruitersPerOffice||0))):0;
     const newDet=Math.max(0,det-prev.det),newD=Math.max(0,d2d-prev.d2d),newMgr=Math.max(0,mgr-prev.mgr),newAdmin=Math.max(0,admin-prev.admin),newRecruiter=Math.max(0,recruiter-prev.recruiter),newV=Math.max(0,vans-prev.vans),newOff=Math.max(0,off-prev.off);
     addCohort(cohorts.det,newDet,i);addCohort(cohorts.d2d,newD,i);addCohort(cohorts.mgr,newMgr,i);addCohort(cohorts.admin,newAdmin,i);addCohort(cohorts.recruiter,newRecruiter,i);
     const revenuePerRep=detail.salesDay*detail.daysWeek*detail.ticket*detail.weeksYear/12*(detail.completionRate/100),rev=d2d*revenuePerRep;
     const detPayroll=cohortHourlyPayroll(cohorts.det,i,detail.detailerPay,detail.detailerRaise,detail.detailerRaiseMonths),mgrPayroll=cohortHourlyPayroll(cohorts.mgr,i,detail.managerPay,detail.managerRaise,detail.managerRaiseMonths),adminPayroll=cohortHourlyPayroll(cohorts.admin,i,detail.adminPay,detail.adminRaise,detail.adminRaiseMonths),recruiterPayroll=cohortHourlyPayroll(cohorts.recruiter,i,detail.recruiterPay,0,12),d2dPayroll=cohortD2DPayroll(cohorts.d2d,i,revenuePerRep),wages=detPayroll+mgrPayroll+adminPayroll+recruiterPayroll+d2dPayroll;
-    const payrollTaxes=wages*detail.payrollTax/100,workersComp=(detPayroll+mgrPayroll)*detail.workersComp/100,processing=rev*detail.paymentProcessing/100,recurring=vans*(detail.vanMonthly+detail.hotspot)+d2d*detail.ipadService+detail.otherOverhead,recruiting=(newDet+newD+newMgr)*detail.recruitCost;
-    const opProfit=rev-(wages+payrollTaxes+workersComp+processing+recurring+recruiting),capex=newV*(detail.vanPurchase+detail.vanSetup)+newD*detail.ipadPurchase,netCash=opProfit-capex,avgComm=avgD2DCommission(cohorts.d2d,i),employees=det+d2d+mgr+admin+recruiter;
+    const payrollTaxes=wages*detail.payrollTax/100,workersComp=(detPayroll+mgrPayroll)*detail.workersComp/100,processing=rev*detail.paymentProcessing/100,officeMonthly=earlyOffice?officeRent(off):0,recurring=vans*(detail.vanMonthly+detail.hotspot)+d2d*detail.ipadService+detail.otherOverhead+officeMonthly,recruiting=(newDet+newD+newMgr+newAdmin+newRecruiter)*detail.recruitCost;
+    const opProfit=rev-(wages+payrollTaxes+workersComp+processing+recurring+recruiting),capex=newV*(detail.vanPurchase+detail.vanSetup)+newD*detail.ipadPurchase+(earlyOffice?newOff*detail.officeSetup:0),netCash=opProfit-capex,avgComm=avgD2DCommission(cohorts.d2d,i),employees=det+d2d+mgr+admin+recruiter;
     totals[x.y].employees=employees;totals[x.y].revenue+=rev;totals[x.y].opProfit+=opProfit;totals[x.y].capex+=capex;totals[x.y].netCash+=netCash;
     rowsByYear[x.y].push({label:monthName(x),det,d2d,vans,mgr,off,rev,avgComm,opProfit,netCash});endState[x.y]={det,d2d,vans,mgr,off,admin,recruiter,employees,avgComm};prev={det,d2d,mgr,vans,off,admin,recruiter};
   });
@@ -160,38 +170,41 @@ function venturePlan(v,endYear=2047){
 function ventureYear(v,y){if(y<v.startYear)return null;return venturePlan(v,y)[y]||null;}
 
 function buildSharedServiceHubCost(year,companies,priorHubs=0){
+  const zero={id:'sharedHubs',name:'Shared Service Operations Hubs',division:'Shared Infrastructure',revenue:0,opProfit:0,capex:0,netCash:0,employees:0,locations:0,cities:0,states:0,newLocations:0,marketPath:'Shared regional infrastructure'};
+  if(year<(detail.sharedHubStartYear||2029)) return zero;
   const serviceIds=new Set(['detailing','cleaning','pressure','landscaping']);
   const service=companies.filter(c=>serviceIds.has(c.id));
-  if(!service.length)return {id:'sharedHubs',name:'Shared Service Operations Hubs',division:'Shared Infrastructure',revenue:0,opProfit:0,capex:0,netCash:0,employees:0,locations:0,cities:0,states:0,newLocations:0,marketPath:'Shared regional infrastructure'};
+  // A hub is only "shared" once at least two field-service brands are active.
+  if(service.length<2) return zero;
   const fieldEmployees=service.reduce((a,c)=>a+(c.employees||0),0);
   const widestCities=Math.max(1,...service.map(c=>c.cities||1));
   const widestStates=Math.max(1,...service.map(c=>c.states||1));
-  // One shared hub serves several brands in the same metro. Add a second hub only when combined field headcount requires it.
   const capacityHubs=Math.ceil(fieldEmployees/Math.max(1,detail.sharedHubCapacity));
   const hubs=Math.max(widestCities,capacityHubs);
   const avgPeople=fieldEmployees/Math.max(1,hubs);
-  const baseMonthly=avgPeople<=35?detail.sharedHubSmallMonthly:avgPeople<=80?detail.sharedHubMediumMonthly:detail.sharedHubLargeMonthly;
-  const inflation=Math.pow(1+(detail.sharedHubAnnualInflation||0)/100,Math.max(0,year-2027));
+  const baseMonthly=avgPeople<=45?detail.sharedHubSmallMonthly:avgPeople<=100?detail.sharedHubMediumMonthly:detail.sharedHubLargeMonthly;
+  const inflation=Math.pow(1+(detail.sharedHubAnnualInflation||0)/100,Math.max(0,year-(detail.sharedHubStartYear||2029)));
   const rent=hubs*baseMonthly*12*inflation;
-  const admins=Math.ceil(fieldEmployees/Math.max(1,detail.sharedAdminPerEmployees));
-  const recruiters=Math.ceil(fieldEmployees/Math.max(1,detail.sharedRecruiterPerEmployees));
+  const admins=Math.ceil(hubs*Math.max(0,detail.sharedAdminsPerHub||1));
+  const recruiters=hubs>0?Math.max(1,Math.ceil(hubs*Math.max(0,detail.sharedRecruitersPerHub||0))):0;
   const supportEmployees=admins+recruiters;
   const supportWages=supportEmployees*detail.sharedSupportPay*detail.hoursWeek*detail.weeksYear;
   const supportTax=supportWages*(detail.payrollTax+detail.workersComp)/100;
   const opCost=rent+supportWages+supportTax;
+  // Existing North Splash offices convert into shared hubs. Only NEW physical hubs get setup cash.
   const newHubs=Math.max(0,hubs-priorHubs);
   const capex=newHubs*detail.sharedHubSetup;
-  return {id:'sharedHubs',name:'Shared Service Operations Hubs',division:'Shared Infrastructure',revenue:0,opProfit:-opCost,capex,netCash:-(opCost+capex),employees:supportEmployees,locations:hubs,cities:widestCities,states:widestStates,newLocations:newHubs,marketPath:'One larger hub per dense service market → shared parking/storage/dispatch/admin/recruiting → additional hub only when combined capacity requires it',hubRent:rent,admins,recruiters,fieldEmployees};
+  return {id:'sharedHubs',name:'Shared Service Operations Hubs',division:'Shared Infrastructure',revenue:0,opProfit:-opCost,capex,netCash:-(opCost+capex),employees:supportEmployees,locations:hubs,cities:widestCities,states:widestStates,newLocations:newHubs,marketPath:'Existing service offices convert into shared hubs; upgrade first, then add a new physical hub only when a new market or capacity requires it',hubRent:rent,admins,recruiters,fieldEmployees,activeMonths:12};
 }
 
 function buildPortfolio(detailModel){
-  const years={};let priorHubs=0;
+  const years={};let priorHubs=detailModel.endState[2028]?.off||0;
   for(let y=2027;y<=2047;y++){
     const d=detailModel.totals[y],detMarkets=detailModel.endState[y].off;
     const companies=[{id:'detailing',name:'North Splash Auto Luxe',division:'Service',...d,locations:detMarkets,cities:Math.max(1,Math.ceil(detMarkets/1.4)),states:Math.max(1,Math.ceil(detMarkets/10)),marketPath:'Raleigh → Triangle → North Carolina → Southeast → East Coast → high-opportunity U.S. metros'}];
     Object.entries(ventures).forEach(([id,v])=>{const a=ventureYear(v,y);if(a)companies.push({id,name:v.name,division:v.division,...a});});
-    const hub=buildSharedServiceHubCost(y,companies,priorHubs);priorHubs=hub.locations;
-    companies.push(hub);
+    const hub=buildSharedServiceHubCost(y,companies,priorHubs);if(hub.locations>0)priorHubs=hub.locations;
+    if(hub.locations>0||hub.opProfit!==0||hub.capex!==0)companies.push(hub);
     const total=companies.reduce((a,c)=>({revenue:a.revenue+c.revenue,opProfit:a.opProfit+c.opProfit,capex:a.capex+c.capex,netCash:a.netCash+c.netCash,employees:a.employees+c.employees}),{revenue:0,opProfit:0,capex:0,netCash:0,employees:0});
     years[y]={companies,total,sharedHubs:hub};
   }
@@ -201,8 +214,8 @@ function buildPortfolio(detailModel){
 const roadmap={
   2027:{goal:'Scale North Splash to 50 detailers',before:'Working founder phase validated; operating cash reserve; hiring, scheduling and quality-control systems.',start:'Move from founder phase into crew-based operations. Add vans only with booked demand. Open the first small office in May.',milestone:'50 detailers / 25 vans target with profitable core crews and management handling daily work.'},
   2028:{goal:'Regional detailing + launch clothing',before:'North Splash has leaders, cash reserves and repeatable recruiting.',start:'Expand North Splash offices and launch the clothing brand online with small inventory tests.',milestone:'Detailing succeeds outside the first territory and clothing shows repeat profitable demand.'},
-  2029:{goal:'Launch commercial cleaning',before:'Central admin, recruiting and finance can support another service company.',start:'Build recurring B2B contracts in medical, office, retail and warehouse accounts.',milestone:'Cleaning contracts cover crews and supervision with predictable recurring revenue.'},
-  2030:{goal:'Launch pressure washing + shared service hubs',before:'Existing residential/commercial customer lists and sales team are active.',start:'Cross-sell detailing, cleaning, HOA and property-management accounts.',milestone:'Four operating companies are profitable with executive oversight and shared service hubs reduce duplicate overhead.'},
+  2029:{goal:'Launch commercial cleaning + convert offices to shared hubs',before:'North Splash offices are operating efficiently and central support can handle another field-service brand.',start:'Build recurring B2B contracts and let Cleaning share existing North Splash space before adding any new facility.',milestone:'Cleaning contracts cover crews and existing service hubs support both brands without duplicate office overhead.'},
+  2030:{goal:'Launch pressure washing + expand shared service hubs',before:'Existing residential/commercial customer lists and sales team are active.',start:'Cross-sell detailing, cleaning, HOA and property-management accounts.',milestone:'Four operating companies are profitable with executive oversight and shared service hubs reduce duplicate overhead.'},
   2031:{goal:'Launch landscaping + multi-city operating system',before:'Regional managers, SOPs, centralized accounting/HR and quality audits.',start:'Deepen the strongest markets instead of adding cities only for appearance.',milestone:'Multiple markets stay profitable without owner involvement in daily operations.'},
   2032:{goal:'Acquire entertainment + commercial property',before:'Strong cash flow, lender relationships, acquisition reserve, CPA and commercial attorney.',start:'Buy a positive-cash-flow bowling/entertainment business and first operating real estate.',milestone:'Entertainment and property both produce positive cash flow after debt service and reserves.'},
   2033:{goal:'Launch construction management',before:'Real projects to manage, experienced project executives, insurance and legal structure.',start:'Manage budgets, schedules, procurement and subcontractor coordination.',milestone:'Projects finish on schedule/budget and team can support first apartment development.'},
