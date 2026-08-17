@@ -65,10 +65,36 @@ document.querySelector('#reset').onclick=()=>{if(confirm('Reset every editable n
 let advanced=false;
 document.querySelector('#showAll').onclick=e=>{advanced=!advanced;document.body.classList.toggle('show-advanced',advanced);e.target.textContent=advanced?'Hide advanced settings':'Show all settings';};
 
+const yearPlans={
+  2027:{
+    startMonth:3,
+    detailers:[2,8,14,20,26,32,38,44,50],
+    offices:[0,1,1,1,1,1,1,1,1]
+  },
+  2028:{
+    startMonth:0,
+    detailers:[50,54,58,62,66,70,75,80,85,90,95,100],
+    offices:[1,1,1,2,2,2,2,3,3,3,3,4]
+  },
+  2029:{
+    startMonth:0,
+    detailers:[100,105,109,114,118,123,127,132,136,141,145,150],
+    offices:[4,4,4,4,5,5,5,5,6,6,6,6]
+  },
+  2030:{
+    startMonth:0,
+    detailers:[150,155,159,164,168,173,177,182,186,191,195,200],
+    offices:[6,6,6,7,7,7,7,8,8,8,8,8]
+  }
+};
+
 const months=[];
-for(let y=2027;y<=2028;y++){const start=y===2027?3:0;for(let m=start;m<12;m++)months.push({y,m});}
-const targetDetailers=[2,8,14,20,26,32,38,44,50,50,54,58,62,66,70,75,80,85,90,95,100];
-const targetOffices=[0,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,3,3,3,3,4];
+Object.entries(yearPlans).forEach(([year,plan])=>{
+  plan.detailers.forEach((detailers,idx)=>{
+    months.push({y:+year,m:plan.startMonth+idx,detailers,offices:plan.offices[idx]});
+  });
+});
+const years=Object.keys(yearPlans).map(Number);
 
 const money=n=>`${n<0?'-$':'$'}${Math.abs(Math.round(n)).toLocaleString()}`;
 const number=n=>Math.round(n).toLocaleString();
@@ -127,18 +153,26 @@ function renderFounder(){
   const pp=document.querySelector('#fpProfit');pp.textContent=money(profit);pp.className=profit>=0?'positive':'negative';
 }
 
+function projectionTable(rows){
+  return `<div class="tablewrap"><table><thead><tr><th>Month</th><th>Detailers</th><th>D2D</th><th>Vans</th><th>Managers</th><th>Offices</th><th>Revenue</th><th>Avg D2D %</th><th>Operating Profit</th><th>Net Cash Flow</th></tr></thead><tbody class="projection-year-body">${rows}</tbody></table></div>`;
+}
+
 function render(){
   renderFounder();
-  let rows='',totals={2027:{rev:0,op:0,cash:0},2028:{rev:0,op:0,cash:0}};
+  const totals={};
+  const rowsByYear={};
+  const endState={};
+  years.forEach(y=>{totals[y]={rev:0,op:0,cash:0};rowsByYear[y]=[];});
+
   let prev={det:0,d2d:0,mgr:0,vans:0,off:0,admin:0,recruiter:0};
   const cohorts={det:[],d2d:[],mgr:[],admin:[],recruiter:[]};
 
   months.forEach((x,i)=>{
-    const det=targetDetailers[i];
+    const det=x.detailers;
     const d2d=Math.ceil(det/2);
     const vans=Math.ceil(det/2);
     const mgr=Math.floor(vans/5);
-    const off=targetOffices[i];
+    const off=x.offices;
     const admin=off;
     const recruiter=(x.y===2027&&x.m===3)||off===0?0:Math.max(1,Math.ceil(off*s.recruitersPerOffice));
 
@@ -149,7 +183,7 @@ function render(){
     const rev=d2d*revenuePerRep;
     const detPayroll=cohortHourlyPayroll(cohorts.det,i,s.detailerPay,s.detailerRaise,s.detailerRaiseMonths);
     const mgrPayroll=cohortHourlyPayroll(cohorts.mgr,i,s.managerPay,s.managerRaise,s.managerRaiseMonths);
-    const adminPayroll=cohortHourlyPayroll(cohorts.admin,i,s.adminPay,0,12);
+    const adminPayroll=cohortHourlyPayroll(cohorts.admin,i,s.adminPay,s.adminRaise,s.adminRaiseMonths);
     const recruiterPayroll=cohortHourlyPayroll(cohorts.recruiter,i,s.recruiterPay,0,12);
     const d2dPayroll=cohortD2DPayroll(cohorts.d2d,i,revenuePerRep);
     const wages=detPayroll+mgrPayroll+adminPayroll+recruiterPayroll+d2dPayroll;
@@ -165,17 +199,38 @@ function render(){
 
     totals[x.y].rev+=rev;totals[x.y].op+=opProfit;totals[x.y].cash+=netCash;
     const avgComm=avgD2DCommission(cohorts.d2d,i);
-    rows+=`<tr><td>${monthName(x)}</td><td>${det}</td><td>${d2d}</td><td>${vans}</td><td>${mgr}</td><td>${off}</td><td>${money(rev)}</td><td>${pct(avgComm)}</td><td class="${opProfit>=0?'positive':'negative'}">${money(opProfit)}</td><td class="${netCash>=0?'positive':'negative'}">${money(netCash)}</td></tr>`;
+    const isYearEnd=x.m===11;
+    rowsByYear[x.y].push(`<tr class="${isYearEnd?'year-end-row':''}"><td>${monthName(x)}</td><td>${det}</td><td>${d2d}</td><td>${vans}</td><td>${mgr}</td><td>${off}</td><td>${money(rev)}</td><td>${pct(avgComm)}</td><td class="${opProfit>=0?'positive':'negative'}">${money(opProfit)}</td><td class="${netCash>=0?'positive':'negative'}">${money(netCash)}</td></tr>`);
+    endState[x.y]={det,d2d,vans,mgr,off,avgComm};
     prev={det,d2d,mgr,vans,off,admin,recruiter};
   });
 
-  document.querySelector('#projectionBody').innerHTML=rows;
-  ['2027','2028'].forEach(y=>{
-    document.querySelector(`#r${y.slice(2)}`).textContent=money(totals[y].rev);
-    const p=document.querySelector(`#p${y.slice(2)}`);p.textContent=money(totals[y].op);p.className=totals[y].op>=0?'positive':'negative';
-    const c=document.querySelector(`#c${y.slice(2)}`);c.textContent=money(totals[y].cash);c.className=totals[y].cash>=0?'positive':'negative';
-    const margin=totals[y].rev?totals[y].op/totals[y].rev*100:0;document.querySelector(`#m${y.slice(2)}`).textContent=`${pct(margin)} margin`;
-  });
+  document.querySelector('#yearSummaryCards').innerHTML=years.map(y=>{
+    const t=totals[y],e=endState[y],margin=t.rev?t.op/t.rev*100:0;
+    return `<div class="year-summary-card"><span>${y} REVENUE</span><strong>${money(t.rev)}</strong><b class="year-profit ${t.op>=0?'positive':'negative'}">${money(t.op)} profit</b><small>${pct(margin)} margin · ${e.det} detailers · ${e.off} office${e.off===1?'':'s'}</small></div>`;
+  }).join('');
+
+  const openYears=new Set(JSON.parse(sessionStorage.getItem('nsOpenYears')||'[2027]'));
+  document.querySelector('#yearAccordions').innerHTML=years.map(y=>{
+    const t=totals[y],e=endState[y],isOpen=openYears.has(y);
+    return `<div class="year-group ${isOpen?'open':''}" data-year="${y}">
+      <button class="year-toggle" type="button" aria-expanded="${isOpen}">
+        <span class="year-label">${y}</span>
+        <span class="year-meta"><span>Revenue <b>${money(t.rev)}</b></span><span>Profit <b class="${t.op>=0?'positive':'negative'}">${money(t.op)}</b></span><span>Cash <b class="${t.cash>=0?'positive':'negative'}">${money(t.cash)}</b></span><span>EOY <b>${e.det} detailers · ${e.d2d} D2D · ${e.off} offices</b></span></span>
+        <span class="chevron">⌄</span>
+      </button>
+      <div class="year-months">${projectionTable(rowsByYear[y].join(''))}</div>
+    </div>`;
+  }).join('');
+
+  document.querySelectorAll('.year-toggle').forEach(btn=>btn.addEventListener('click',()=>{
+    const group=btn.closest('.year-group');
+    group.classList.toggle('open');
+    btn.setAttribute('aria-expanded',group.classList.contains('open'));
+    const current=[...document.querySelectorAll('.year-group.open')].map(g=>+g.dataset.year);
+    sessionStorage.setItem('nsOpenYears',JSON.stringify(current));
+  }));
+
   document.querySelector('#heroTicket').textContent=money(s.ticket);
   document.querySelector('#heroVolume').textContent=`${s.salesDayLow.toFixed(1)}–${s.salesDayHigh.toFixed(1)}`;
 
@@ -192,7 +247,7 @@ function render(){
 
 function exportCSV(){
   const headers=['Month','Detailers','D2D','Vans','Managers','Offices','Revenue','Avg D2D Commission','Operating Profit','Net Cash Flow'];
-  const trs=[...document.querySelectorAll('#projectionBody tr')];
+  const trs=[...document.querySelectorAll('.projection-year-body tr')];
   const lines=[headers.join(','),...trs.map(tr=>[...tr.children].map(td=>`"${td.textContent.replaceAll('"','""')}"`).join(','))];
   const blob=new Blob([lines.join('\n')],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='north-splash-projection.csv';a.click();URL.revokeObjectURL(a.href);
 }
