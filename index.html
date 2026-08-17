@@ -15,7 +15,7 @@
   </nav>
   <div class="header-copy">
     <span class="eyebrow">2027 → 2047 · OPERATIONS · CAPITAL · LEGACY</span>
-    <h1>Empire Growth Planner</h1>
+    <h1>Smart Empire Growth Planner</h1>
     <p>One editable operating model for North Splash, new companies, real estate, construction, hospitality and the long-term island plan.</p>
   </div>
 </header>
@@ -33,6 +33,7 @@
     <button class="app-tab active" data-tab="overview">Portfolio</button>
     <button class="app-tab" data-tab="detailing">North Splash</button>
     <button class="app-tab" data-tab="ventures">Businesses</button>
+    <button class="app-tab" data-tab="markets">Markets</button>
     <button class="app-tab" data-tab="timeline">21-Year Roadmap</button>
     <button class="app-tab" data-tab="capital">Capital & Savings</button>
     <button class="app-tab" data-tab="settings">Settings</button>
@@ -72,8 +73,18 @@
 
   <div class="tab-page" id="tab-ventures">
     <section>
-      <div class="sectionhead"><div><span class="kicker">VENTURE BUILDER</span><h2>Other Businesses</h2><p>Each company has editable launch, growth, margin, staffing and expansion assumptions.</p></div><span class="status-pill">All companies scale</span></div>
+      <div class="sectionhead"><div><span class="kicker">VENTURE BUILDER</span><h2>Other Businesses</h2><p>Each company has editable launch economics, staffing, same-market growth and profit-funded expansion controls.</p></div><span class="status-pill">All companies scale</span></div>
       <div id="ventureCards" class="venture-cards"></div>
+    </section>
+  </div>
+
+
+  <div class="tab-page" id="tab-markets">
+    <section>
+      <div class="sectionhead"><div><span class="kicker">EXPANSION ENGINE</span><h2>Markets & Locations</h2><p>Profit-funded branch growth across cities and states. The model builds density before jumping into new states.</p></div><span class="status-pill">Profit-driven growth</span></div>
+      <div id="marketKpis" class="kpi-grid"></div>
+      <div class="callout"><b>Smart expansion rule:</b> new locations are funded from a controlled percentage of the prior year's operating profit, capped by each company's maximum annual branch-growth rate. Capital-heavy businesses scale slower than service companies.</div>
+      <div id="marketCards" class="market-cards"></div>
     </section>
   </div>
 
